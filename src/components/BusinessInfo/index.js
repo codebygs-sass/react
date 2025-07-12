@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
+import Img1 from '../../assets/Lo.png'
 
 const BusinessInfo = (props) => {
 
@@ -39,8 +40,7 @@ const BusinessInfo = (props) => {
         e.preventDefault();
    
         axios.post(`${serverUrl}/api/business`, form).then((res) => {
-            if(res.status == 200){  
-                alert('Data updated successfully')   
+            if(res.status == 200){    
                 navigate('/custom');
             }
         }).catch((err) => console.log(err))
@@ -52,6 +52,9 @@ const BusinessInfo = (props) => {
 <section className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
       <div className="w-full max-w-5xl bg-white shadow-xl rounded-2xl p-10 border border-gray-200">
        
+         <div style={{display:'grid',width:"100%",placeItems:'center'}}>
+                 <img src={Img1} width="100" height="100" />
+               </div>
         <div className="text-center mb-10">
           <h2 className="text-3xl font-extrabold text-gray-900">
             Step 2 of 3 –
