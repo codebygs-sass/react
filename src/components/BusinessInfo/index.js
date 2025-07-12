@@ -213,6 +213,7 @@ onChange={(e) => handleChange(e)}
               <input
                 type="text"
                 name="bizPhone"
+                onChange={(e) => handleChange(e)}
                 value={bizPhone}
                 placeholder="+1 234 567 8901"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
@@ -226,6 +227,7 @@ onChange={(e) => handleChange(e)}
               <input
                 type="text"
                 name="website"
+                onChange={(e) => handleChange(e)}
                 value={website}
                 placeholder="https://acme.com"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none"
@@ -241,6 +243,7 @@ onChange={(e) => handleChange(e)}
                 type="text"
                 name="ein"
                 value={ein}
+                onChange={(e) => handleChange(e)}
                 placeholder="12-3456789"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
               />
@@ -271,6 +274,7 @@ onChange={(e) => handleChange(e)}
                 <span className="text-gray-400">(Optional)</span></label>
               <select
                 name="fiscalStart"
+                onChange={(e) => handleChange(e)}
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
               >
                 <option value="">Select month</option>
