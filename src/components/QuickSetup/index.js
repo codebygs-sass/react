@@ -127,7 +127,6 @@ onChange={(e) => handleChange(e)}
               name="phone"
               type="text"
               value={phone}
-              pattern="^\+?[0-9\s\-]{7,15}$"
               placeholder="+1 234 567 8901"
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
