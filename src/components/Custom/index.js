@@ -24,7 +24,7 @@ const CustomPage = (props) => {
 
     const handleSubmit  = (e) => {
            e.preventDefault();
-               axios.post(`${serverUrl}/custom`, form).then((res) => {
+               axios.post(`${serverUrl}/api/custom`, form).then((res) => {
         if(res.status == 200){     
         window.location.href = process.env.REACT_APP_EXTERNAL_URL_PRODUCTS
         }

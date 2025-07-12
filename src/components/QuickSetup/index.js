@@ -36,7 +36,7 @@ import { useNavigate } from 'react-router-dom';
         "country":country
     }
     setEmail(email)
-    axios.post(`${serverUrl}/signup`, formData).then((res) => {
+    axios.post(`${serverUrl}/api/signup`, formData).then((res) => {
         if(res.status == 200){     
             navigate('/business');
         }

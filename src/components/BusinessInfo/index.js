@@ -38,7 +38,7 @@ const BusinessInfo = (props) => {
      const handleSubmit = (e) => {
         e.preventDefault();
    
-        axios.post(`${serverUrl}/business`, form).then((res) => {
+        axios.post(`${serverUrl}/api/business`, form).then((res) => {
             if(res.status == 200){  
                 alert('Data updated successfully')   
                 navigate('/custom');
