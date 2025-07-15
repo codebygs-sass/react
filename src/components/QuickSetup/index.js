@@ -255,7 +255,7 @@ onChange={(e) => handleChange(e)}
               type="submit"
               className="w-full py-3 px-6 text-white text-lg font-semibold rounded-md bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-yellow-400 shadow-lg transition-all duration-300"
             >
-              Continue to Step 2 →
+              Submit →
             </button>
           </div>
         </form>
