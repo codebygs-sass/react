@@ -61,7 +61,7 @@ import countries from '../../data/country.json'
         "email": email,
         "password": password,
         "name": fullName,
-        "phone":dialcode[0].dial_code + phone,
+        "phone":phone,
         "country":country
     }
     setEmail(email)
