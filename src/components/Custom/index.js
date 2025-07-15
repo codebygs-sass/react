@@ -16,6 +16,23 @@ const CustomPage = (props) => {
         email:email    
     })
 
+    const [errors,setErrors] = useState({
+        timezone:"",
+        language:"",
+        dataRegion:"",
+    })
+
+
+     const handleBlur = (e) => {
+  const {name,value} = e.target;
+  if(!value){
+    setErrors({...errors,[name]: 'Please fill the fields'})
+  } else{
+    setErrors({...errors,[name]: ''})
+  }
+ }
+
+
      const serverUrl = process.env.REACT_APP_SERVER_URL;
 
       const handleChange = (e) => {
@@ -66,6 +83,7 @@ const CustomPage = (props) => {
               name="timezone"
               required
 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               <option value="">Select your timezone</option>
@@ -76,6 +94,7 @@ onChange={(e) => handleChange(e)}
               <option>IST – India Standard Time</option>
               <option>AEST – Australian Eastern Time</option>
             </select>
+            {errors.timezone && <span style={{color:'red'}}>{errors.timezone}</span>}
           </div>
 
           
@@ -86,6 +105,7 @@ onChange={(e) => handleChange(e)}
             <select
               name="language"
               onChange={(e) => handleChange(e)}
+              onBlur={(e) => handleBlur(e)}
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-green-400 focus:outline-none"
             >
               <option selected>English</option>
@@ -95,16 +115,18 @@ onChange={(e) => handleChange(e)}
               <option>Hindi</option>
               <option>Portuguese</option>
             </select>
+            {errors.language && <span style={{color:'red'}}>{errors.language}</span>}
           </div>
 
         
           <div>
             <label className="block text-sm font-medium text-gray-700"
               >Data Storage Region
-              <span className="text-gray-400">(Optional)</span></label>
+              </label>
             <select
               name="dataRegion"
               onChange={(e) => handleChange(e)}
+              onBlur={(e) => handleBlur(e)}
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
             >
               <option value="">Choose region</option>
@@ -118,10 +140,6 @@ onChange={(e) => handleChange(e)}
           <div
             className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4"
           >
-          
-       
-
-            
             <button
               type="submit"
               className="w-full sm:w-auto py-3 px-6 text-white text-lg font-semibold rounded-md bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-yellow-400 shadow-lg transition-all duration-300"

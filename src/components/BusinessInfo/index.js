@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
 
 const BusinessInfo = (props) => {
@@ -23,10 +23,37 @@ const BusinessInfo = (props) => {
         fiscalStart:"",
         email:email
      })
+
+      const [errors,setErrors] = useState({
+        legalName:"",
+        industry:"",
+        businessType:"",
+        employees:"",
+        address:"",
+        city: "",
+        state:"",
+        zip:"",
+        bizPhone:"",
+        website:"",
+        ein:"",
+        currency:"",
+        fiscalStart:"",
+ });
+
+
+ const handleBlur = (e) => {
+  const {name,value} = e.target;
+  if(!value){
+    setErrors({...errors,[name]: 'Please fill the fields'})
+  } else{
+    setErrors({...errors,[name]: ''})
+  }
+ }
+
     
      const navigate = useNavigate();
 
-      const serverUrl = process.env.REACT_APP_SERVER_URL;
+     const serverUrl = process.env.REACT_APP_SERVER_URL;
     
      const {legalName,industry,businessType,employees,address,city,bizPhone,state,zip,website,fiscalStart,ein,currency} = form;
     
@@ -38,12 +65,15 @@ const BusinessInfo = (props) => {
     
      const handleSubmit = (e) => {
         e.preventDefault();
-   
+            const isEmpty = Object.values(errors).every(x => x === null || x === '');
+
+    if(isEmpty){
         axios.post(`${serverUrl}/api/business`, form).then((res) => {
             if(res.status == 200){    
                 navigate('/custom');
             }
         }).catch((err) => console.log(err))
+      }
     
      }
 
@@ -80,11 +110,13 @@ const BusinessInfo = (props) => {
                 name="legalName"
                 value={legalName}
                 required
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
             
                 placeholder="Acme Technologies LLC"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
+                   {errors.legalName && <span style={{color:'red'}}>{errors.legalName}</span>}
             </div>
 
           
@@ -94,7 +126,8 @@ onChange={(e) => handleChange(e)}
               <select
                 name="industry"
                 required
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
 value={industry}
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-green-500 focus:outline-none"
               >
@@ -105,6 +138,7 @@ value={industry}
                 <option>Finance</option>
                 <option>Education</option>
               </select>
+                                {errors.industry && <span style={{color:'red'}}>{errors.industry}</span>}
             </div>
 
             
@@ -114,7 +148,8 @@ value={industry}
               <select
                 name="businessType"
                 required
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
 
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
               >
@@ -124,6 +159,7 @@ onChange={(e) => handleChange(e)}
                 <option>Sole Proprietorship</option>
                 <option>Partnership</option>
               </select>
+                              {errors.businessType && <span style={{color:'red'}}>{errors.businessType}</span>}
             </div>
 
             
@@ -133,7 +169,8 @@ onChange={(e) => handleChange(e)}
               <select
                 name="employees"
                 required
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
               >
                 <option value="">Select range</option>
@@ -142,6 +179,7 @@ onChange={(e) => handleChange(e)}
                 <option>51–200</option>
                 <option>500+</option>
               </select>
+                   {errors.employees && <span style={{color:'red'}}>{errors.employees}</span>}
             </div>
 
            
@@ -151,12 +189,14 @@ onChange={(e) => handleChange(e)}
               <textarea
                 name="address"
                 required
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
 value={address}
                 rows="3"
                 placeholder="123 Business Rd, Suite 100"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
               ></textarea>
+                      {errors.address && <span style={{color:'red'}}>{errors.address}</span>}
             </div>
 
            
@@ -168,10 +208,12 @@ value={address}
                 name="city"
                 required
                 value={city}
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 placeholder="New York"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none"
               />
+                {errors.city && <span style={{color:'red'}}>{errors.city}</span>}
             </div>
 
           
@@ -181,7 +223,8 @@ onChange={(e) => handleChange(e)}
               <select
                 name="state"
                 required
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
               >
                 <option value="">Select state</option>
@@ -190,6 +233,7 @@ onChange={(e) => handleChange(e)}
                 <option>TX</option>
                 <option>FL</option>
               </select>
+                       {errors.state && <span style={{color:'red'}}>{errors.state}</span>}
             </div>
 
             
@@ -202,54 +246,63 @@ onChange={(e) => handleChange(e)}
                 pattern="\d{5}"
                 required
                 value={zip}
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 placeholder="10001"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-400 focus:outline-none"
               />
+                       {errors.zip && <span style={{color:'red'}}>{errors.zip}</span>}
             </div>
 
            
             <div className="col-span-1">
               <label className="block text-sm font-medium text-gray-700"
                 >Business Phone
-                <span className="text-gray-400">(Optional)</span></label>
+                </label>
               <input
                 type="text"
                 name="bizPhone"
                 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 value={bizPhone}
                 placeholder="+1 234 567 8901"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
               />
+                       {errors.bizPhone && <span style={{color:'red'}}>{errors.bizPhone}</span>}
             </div>
 
             
             <div className="col-span-1">
               <label className="block text-sm font-medium text-gray-700"
-                >Website <span className="text-gray-400">(Optional)</span></label>
+                >Website </label>
               <input
                 type="text"
                 name="website"
                 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 value={website}
                 placeholder="https://acme.com"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none"
               />
+              {errors.website && <span style={{color:'red'}}>{errors.website}</span>}
+              
             </div>
 
           
             <div className="col-span-1">
               <label className="block text-sm font-medium text-gray-700"
                 >EIN / Tax ID
-                <span className="text-gray-400">(Optional)</span></label>
+                </label>
               <input
                 type="text"
                 name="ein"
                 value={ein}
                 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 placeholder="12-3456789"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
               />
+                {errors.ein && <span style={{color:'red'}}>{errors.ein}</span>}
             </div>
 
             
@@ -259,7 +312,8 @@ onChange={(e) => handleChange(e)}
               <select
                 name="currency"
                 required
-onChange={(e) => handleChange(e)}
+ onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-green-500 focus:outline-none"
               >
                 <option value="">Select currency</option>
@@ -268,16 +322,18 @@ onChange={(e) => handleChange(e)}
                 <option>GBP – British Pound</option>
                 <option>INR – Indian Rupee</option>
               </select>
+                       {errors.currency && <span style={{color:'red'}}>{errors.currency}</span>}
             </div>
 
           
             <div className="col-span-1">
               <label className="block text-sm font-medium text-gray-700"
                 >Fiscal Year Start
-                <span className="text-gray-400">(Optional)</span></label>
+                </label>
               <select
                 name="fiscalStart"
                 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
               >
                 <option value="">Select month</option>
@@ -294,6 +350,7 @@ onChange={(e) => handleChange(e)}
                 <option>November</option>
                 <option>December</option>
               </select>
+                      {errors.fiscalStart && <span style={{color:'red'}}>{errors.fiscalStart}</span>}
             </div>
           </div>
          

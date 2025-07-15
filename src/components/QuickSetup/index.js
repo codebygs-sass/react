@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
+import countries from '../../data/country.json'
  
  const QuickSetup = ({setEmail}) => {
 
@@ -11,16 +12,32 @@ import Img1 from '../../assets/Lo.png'
     password:"",
     phone:"",
     country:"",
-    checkbox: false
+    terms: false
  })
+
+ const [errors,setErrors] = useState({
+      fullName:"",
+    email:"",
+    password:"",
+    phone:"",
+    country:"",
+ });
+
+
+ const handleBlur = (e) => {
+  const {name,value} = e.target;
+  if(!value){
+    setErrors({...errors,[name]: 'Please fill the fields'})
+  } else{
+    setErrors({...errors,[name]: ''})
+  }
+ }
 
  const navigate = useNavigate();
 
  const {fullName,email,password,phone,country,checkbox} = form;
 
  const serverUrl = process.env.REACT_APP_SERVER_URL;
-
- console.log(serverUrl);
 
  const handleChange = (e) => {
     const {name,value} = e.target;
@@ -29,19 +46,32 @@ import Img1 from '../../assets/Lo.png'
 
  const handleSubmit = (e) => {
     e.preventDefault();
+
+    const isEmpty = Object.values(errors).every(x => x === null || x === '');
+  
+
+    let dialcode = countries.filter((val,ind) => {
+      if(val.name === country)
+        return val.dial_code;
+    })
+
+
+    if(isEmpty){
     const formData = {
         "email": email,
         "password": password,
         "name": fullName,
-        "phone":phone,
+        "phone":dialcode[0].dial_code + phone,
         "country":country
     }
     setEmail(email)
+
     axios.post(`${serverUrl}/api/signup`, formData).then((res) => {
         if(res.status == 200){     
             navigate('/business');
         }
     })
+  }
 
  }
 
@@ -54,8 +84,15 @@ import Img1 from '../../assets/Lo.png'
       <div
         className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 border border-gray-200"
       >
+         <Link to={'/login'}
+          style={{float:'right',fontSize:"smaller",padding:'5px 10px'}}
+              className="w-300 py-3 px-6 text-white text-lg font-semibold rounded-md bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-yellow-400 shadow-lg transition-all duration-300"
+            >
+              Already Do you have account ?
+            </Link>
         <div style={{display:'grid',width:"100%",placeItems:'center'}}>
-          <img src={Img1} width="100" height="100" />
+          <img src={Img1} width="100" height="100" /> 
+          
         </div>
      
         <div className="text-center mb-10">
@@ -72,11 +109,9 @@ import Img1 from '../../assets/Lo.png'
 
        
         <form
-          
           className="space-y-6"
           onSubmit={(e) => handleSubmit(e)}
-        >
-         
+        >  
           <div>
             <label className="block text-sm font-medium text-gray-700"
               >Full Name</label>
@@ -85,10 +120,12 @@ import Img1 from '../../assets/Lo.png'
               type="text"
               required
        onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
               value={fullName}
               placeholder="John Doe"
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
+            {errors.fullName && <span style={{color:'red'}}>{errors.fullName}</span>}
           </div>
 
          
@@ -101,9 +138,11 @@ import Img1 from '../../assets/Lo.png'
               value={email}
               required
 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
               placeholder="john@company.com"
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none"
             />
+                        {errors.email && <span style={{color:'red'}}>{errors.email}</span>}
           </div>
 
          
@@ -115,27 +154,30 @@ onChange={(e) => handleChange(e)}
               type="password"
               required
 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
               value={password}
               minlength="6"
               placeholder="********"
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:outline-none"
             />
-            <p className="text-xs text-gray-500 mt-1">Minimum 6 characters.</p>
+                      {errors.password && <span style={{color:'red'}}>{errors.password}</span>}
           </div>
 
           
           <div>
             <label className="block text-sm font-medium text-gray-700"
-              >Phone Number <span className="text-gray-400">(Optional)</span></label>
+              >Phone Number</label>
             <input
               name="phone"
               type="text"
               value={phone}
               onChange={(e) => handleChange(e)}
+              onBlur={(e) => handleBlur(e)}
               pattern="^\+?[0-9\s\-]{7,15}$"
-              placeholder="+1 234 567 8901"
+              placeholder="000 00 00000"
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
+                        {errors.phone && <span style={{color:'red'}}>{errors.phone}</span>}
           </div>
 
          
@@ -147,9 +189,12 @@ onChange={(e) => handleChange(e)}
               type="text"
               required
 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
+
               placeholder="Acme Inc."
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none"
             />
+                {errors.company && <span style={{color:'red'}}>{errors.company}</span>}
           </div>
 
           
@@ -160,26 +205,19 @@ onChange={(e) => handleChange(e)}
               name="country"
               required
 onChange={(e) => handleChange(e)}
+onBlur={(e) => handleBlur(e)}
+
               value={country}
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md bg-white text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             >
               <option value="">Select your country</option>
-              <option selected>United States</option>
-              <option>Canada</option>
-              <option>United Kingdom</option>
-              <option>Germany</option>
-              <option>India</option>
-              <option>Australia</option>
-              <option>Brazil</option>
-              <option>France</option>
-              <option>Singapore</option>
-              <option>Japan</option>
-              <option>Mexico</option>
-              <option>South Africa</option>
-              <option>Netherlands</option>
-              <option>Spain</option>
-              <option>Italy</option>
+              {countries?.map((val,ind) => {
+                return (
+                  <option key={ind} value={val?.name}>{val?.name}</option>
+                )
+              })}
             </select>
+                            {errors.country && <span style={{color:'red'}}>{errors.country}</span>}
           </div>
 
          
@@ -201,6 +239,7 @@ onChange={(e) => handleChange(e)}
               <a href="#" className="text-blue-600 underline hover:text-blue-800"
                 >Privacy Policy</a>
             </label>
+                            {errors.checkbox && <span style={{color:'red'}}>{errors.checkbox}</span>}
           </div>
 
           
