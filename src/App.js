@@ -5,6 +5,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import PrivateRoute from "./auth/PrivateRoute";
 import { Spin } from 'antd';
+import TagManager from 'react-gtm-module';
+
+const tagManagerArgs = {
+  gtmId: 'GTM-T37TCTN8', // replace with your ID
+};
+
+TagManager.initialize(tagManagerArgs);
 
 
 const contentStyle = {
