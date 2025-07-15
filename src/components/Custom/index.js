@@ -1,13 +1,23 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
+import Loader from '../Loader/index';
 
 const CustomPage = (props) => {
 
     const {email} = props;
 
     const navigate = useNavigate();
+
+      const [loading, setLoading] = useState(true);
+    
+       useEffect(() => {
+          // Simulate loading
+          const timeout = setTimeout(() => setLoading(false), 3000);
+          return () => clearTimeout(timeout);
+        }, []);
+    
 
     const [form,setForm] = useState({
         timezone:"",
@@ -52,6 +62,7 @@ const CustomPage = (props) => {
     
     return (
 <section className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      {loading && <Loader />}
       <div
         className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 border border-gray-200"
       >

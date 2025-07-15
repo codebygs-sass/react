@@ -23,7 +23,7 @@ const QuickSetup = lazy(() => import("./components/QuickSetup"));
 const BusinessInfo = lazy(() => import("./components/BusinessInfo"));
 const CustomPage = lazy(() => import("./components/Custom"));
 const LoginPage = lazy(() => import("./components/Login"));
-// const ProductPage = lazy(() => import("./components/Product"));
+const ProductPage = lazy(() => import("./components/Product"));
 
 
 
@@ -54,6 +54,12 @@ const LoginPage = lazy(() => import("./components/Login"));
               <Route path="/login" element={
              <ErrorBoundary>
                <LoginPage/>
+             </ErrorBoundary>
+          } />
+
+             <Route path="/products" element={
+             <ErrorBoundary>
+               <ProductPage/>
              </ErrorBoundary>
           } />
 

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
+import Loader from '../Loader/index';
 
 const BusinessInfo = (props) => {
 
@@ -39,6 +40,14 @@ const BusinessInfo = (props) => {
         currency:"",
         fiscalStart:"",
  });
+
+  const [loading, setLoading] = useState(true);
+
+   useEffect(() => {
+      // Simulate loading
+      const timeout = setTimeout(() => setLoading(false), 3000);
+      return () => clearTimeout(timeout);
+    }, []);
 
 
  const handleBlur = (e) => {
@@ -80,6 +89,7 @@ const BusinessInfo = (props) => {
     return (
         
 <section className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+   {loading && <Loader />}
       <div className="w-full max-w-5xl bg-white shadow-xl rounded-2xl p-10 border border-gray-200">
        
          <div style={{display:'grid',width:"100%",placeItems:'center'}}>

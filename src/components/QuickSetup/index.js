@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
 import countries from '../../data/country.json'
+import Loader from '../Loader/index';
  
  const QuickSetup = ({setEmail}) => {
+
+   const [loading, setLoading] = useState(true);
 
  const [form,setForm] = useState({
     fullName:"",
@@ -14,6 +17,13 @@ import countries from '../../data/country.json'
     country:"",
     terms: false
  })
+
+ 
+  useEffect(() => {
+    // Simulate loading
+    const timeout = setTimeout(() => setLoading(false), 3000);
+    return () => clearTimeout(timeout);
+  }, []);
 
  const [errors,setErrors] = useState({
       fullName:"",
@@ -50,10 +60,10 @@ import countries from '../../data/country.json'
     const isEmpty = Object.values(errors).every(x => x === null || x === '');
   
 
-    let dialcode = countries.filter((val,ind) => {
-      if(val.name === country)
-        return val.dial_code;
-    })
+    // let dialcode = countries.filter((val,ind) => {
+    //   if(val.name === country)
+    //     return val.dial_code;
+    // })
 
 
     if(isEmpty){
@@ -65,11 +75,15 @@ import countries from '../../data/country.json'
         "country":country
     }
     setEmail(email)
-
+    setLoading(true);
     axios.post(`${serverUrl}/api/signup`, formData).then((res) => {
+      setLoading(false);
         if(res.status == 200){     
             navigate('/business');
         }
+    }).catch(err => {
+      console.log(err);
+      setLoading(false);
     })
   }
 
@@ -81,6 +95,7 @@ import countries from '../../data/country.json'
            <section
       className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center"
     >
+         {loading && <Loader />}
       <div
         className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 border border-gray-200"
       >
