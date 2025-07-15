@@ -59,13 +59,6 @@ import Loader from '../Loader/index';
 
     const isEmpty = Object.values(errors).every(x => x === null || x === '');
   
-
-    // let dialcode = countries.filter((val,ind) => {
-    //   if(val.name === country)
-    //     return val.dial_code;
-    // })
-
-
     if(isEmpty){
     const formData = {
         "email": email,
@@ -79,7 +72,7 @@ import Loader from '../Loader/index';
     axios.post(`${serverUrl}/api/signup`, formData).then((res) => {
       setLoading(false);
         if(res.status == 200){     
-            navigate('/business');
+           window.location.href = process.env.REACT_APP_EXTERNAL_URL_PRODUCTS
         }
     }).catch(err => {
       console.log(err);
@@ -112,7 +105,6 @@ import Loader from '../Loader/index';
      
         <div className="text-center mb-10">
           <h2 className="text-3xl font-extrabold text-gray-900">
-            Step 1 of 3 –
             <span
               className="bg-gradient-to-r from-blue-600 via-green-500 to-yellow-400 bg-clip-text text-transparent"
               >Quick Setup</span>
