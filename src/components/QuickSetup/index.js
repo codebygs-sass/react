@@ -72,7 +72,7 @@ import Loader from '../Loader/index';
     axios.post(`${serverUrl}/api/signup`, formData).then((res) => {
       setLoading(false);
         if(res.status == 200){     
-           window.location.href = process.env.REACT_APP_EXTERNAL_URL_PRODUCTS
+           navigate('/products')
         }
     }).catch(err => {
       console.log(err);
