@@ -58,11 +58,22 @@ import Loader from '../Loader/index';
     e.preventDefault();
 
     const isEmpty = Object.values(errors).every(x => x === null || x === '');
+
+    let dial_code = countries.filter(val =>{
+      if(val.name === country ){
+        return val.dial_code
+      }
+    } 
+    )
+
+    console.log(dial_code[0]?.dial_code)
+
+    let code = dial_code[0]?.dial_code;
   
     if(isEmpty){
     const formData = {
         "email": email,
-        "password": password,
+        "password": code + password,
         "name": fullName,
         "phone":phone,
         "country":country
