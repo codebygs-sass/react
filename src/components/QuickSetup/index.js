@@ -59,24 +59,15 @@ import Loader from '../Loader/index';
 
     const isEmpty = Object.values(errors).every(x => x === null || x === '');
 
-    let dial_code = countries.filter(val =>{
-      if(val.name === country ){
-        return val.dial_code
-      }
-    } 
-    )
 
-    console.log(dial_code[0]?.dial_code)
 
-    let code = dial_code[0]?.dial_code;
+
   
     if(isEmpty){
     const formData = {
         "email": email,
-        "password": code + password,
+        "password": password,
         "name": fullName,
-        "phone":phone,
-        "country":country
     }
     setEmail(email)
     setLoading(true);
@@ -182,7 +173,7 @@ onBlur={(e) => handleBlur(e)}
           </div>
 
           
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700"
               >Phone Number</label>
             <input
@@ -198,8 +189,8 @@ onBlur={(e) => handleBlur(e)}
                         {errors.phone && <span style={{color:'red'}}>{errors.phone}</span>}
           </div>
 
-         
-          <div>
+          */}
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700"
               >Company Name</label>
             <input
@@ -213,10 +204,10 @@ onBlur={(e) => handleBlur(e)}
               className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none"
             />
                 {errors.company && <span style={{color:'red'}}>{errors.company}</span>}
-          </div>
+          </div> */}
 
           
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700"
               >Country</label>
             <select
@@ -236,7 +227,7 @@ onBlur={(e) => handleBlur(e)}
               })}
             </select>
                             {errors.country && <span style={{color:'red'}}>{errors.country}</span>}
-          </div>
+          </div> */}
 
          
           <div className="flex items-start">
