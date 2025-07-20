@@ -78,10 +78,17 @@ import { auth } from "../../lib/firebaseClient";
       <div
         className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 border border-gray-200"
       >
-
+        <Link to={'/signup'}
+          style={{float:'right',fontSize:"smaller",padding:'5px 10px'}}
+              className="w-300 py-3 px-6 text-white text-lg font-semibold rounded-md bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-yellow-400 shadow-lg transition-all duration-300"
+            >
+              Create an account ?
+            </Link>
+  <a href="https://www.albetora.com/">
           <div style={{display:'grid',width:"100%",placeItems:'center'}}>
                  <img src={Img1} width="100" height="100" />
                </div>
+               </a>
         
      
         <div className="text-center mb-10">

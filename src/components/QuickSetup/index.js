@@ -100,10 +100,12 @@ import Loader from '../Loader/index';
             >
               Already Do you have account ?
             </Link>
+            <a href="https://www.albetora.com/">
         <div style={{display:'grid',width:"100%",placeItems:'center'}}>
           <img src={Img1} width="100" height="100" /> 
           
         </div>
+        </a>
      
         <div className="text-center mb-10">
           <h2 className="text-3xl font-extrabold text-gray-900">
@@ -257,7 +259,7 @@ onChange={(e) => handleChange(e)}
               type="submit"
               className="w-full py-3 px-6 text-white text-lg font-semibold rounded-md bg-gradient-to-r from-blue-600 to-green-500 hover:from-green-500 hover:to-yellow-400 shadow-lg transition-all duration-300"
             >
-              Submit →
+              Let's start →
             </button>
           </div>
         </form>

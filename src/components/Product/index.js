@@ -39,10 +39,11 @@ const Product = () => {
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16"
       >
      
+     
         <div class="flex items-center space-x-2">
               <img src={ Img1 }class="w-8 h-8 rounded bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow" />
           <span class="text-lg font-semibold tracking-tight text-gray-900"
-            >Albetora</span>
+            >Albetora NoteTaker</span>
         </div>
 
     
