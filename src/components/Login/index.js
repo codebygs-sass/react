@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
@@ -9,12 +9,20 @@ import { auth } from "../../lib/firebaseClient";
  
  const Login = () => {
 
+   const navigate = useNavigate();
+
+    useEffect(() => {
+      const token = sessionStorage.getItem('token') ?? '';
+      if (token) {
+        // Already logged in → go to dashboard
+        navigate("/products");
+      }
+    }, []);
+
  const [form,setForm] = useState({
     email:"",
     password:"",
  })
-
- 
 
  const [errors,setErrors] = useState({
     email:"",
@@ -34,7 +42,6 @@ import { auth } from "../../lib/firebaseClient";
   }
  }
 
- const navigate = useNavigate();
 
  const {email,password} = form;
 
@@ -60,6 +67,12 @@ import { auth } from "../../lib/firebaseClient";
 
     axios.post(`${serverUrl}/api/login`, { idToken: token }).then((res) => {
         if(res.status == 200){     
+        sessionStorage.setItem('token',token);
+        sessionStorage.setItem('firebase_user', JSON.stringify({
+          uid: res.data.uid,
+          email: res.data.email,
+          name: res.data.name
+        }));
             window.location.href = process.env.REACT_APP_EXTERNAL_URL_PRODUCTS;
         }
     })

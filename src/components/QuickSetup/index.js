@@ -1,13 +1,26 @@
 import { useState,useEffect } from "react";
-import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
-import countries from '../../data/country.json'
 import Loader from '../Loader/index';
- 
- const QuickSetup = ({setEmail}) => {
+import { createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import { auth } from "../../lib/firebaseClient";
 
-   const [loading, setLoading] = useState(true);
+ 
+ const QuickSetup = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token') ?? '';
+    if (token) {
+      // Already logged in → go to dashboard
+      navigate("/products");
+    }
+  }, []);
+
+
+
+ const [loading, setLoading] = useState(true);
 
  const [form,setForm] = useState({
     fullName:"",
@@ -43,7 +56,6 @@ import Loader from '../Loader/index';
   }
  }
 
- const navigate = useNavigate();
 
  const {fullName,email,password,phone,country,checkbox} = form;
 
@@ -54,35 +66,52 @@ import Loader from '../Loader/index';
     setForm({...form,[name]:value})
  } 
 
- const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
 
     const isEmpty = Object.values(errors).every(x => x === null || x === '');
 
-
-
-
-  
     if(isEmpty){
-    const formData = {
-        "email": email,
-        "password": password,
-        "name": fullName,
-    }
-    setEmail(email)
+ 
     setLoading(true);
-    axios.post(`${serverUrl}/api/signup`, formData).then((res) => {
+        try {
+      // Create the new user
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+
+      await updateProfile(userCred.user, { displayName: fullName });
+
+    // // 3. Save details in Firestore
+    // await setDoc(doc(db, "users", userCred.user.uid), {
+    //   uid: userCred.user.uid,
+    //   fullName,
+    //   email,
+    //   createdAt: new Date()
+    // });
+      
+      // Get their ID token
+      const token = await userCred.user.getIdToken();
+      console.log("User created! Token:", token);
+
+          sessionStorage.setItem("token", token)
+            sessionStorage.setItem('firebase_user', JSON.stringify({
+               uid: userCred.user.uid,
+      name:fullName,
+      email:email,
+            }))
+               console.log("Token stored in sessionStorage:", token);
+              alert("Account created successfully!");
+
+            navigate('/products')
+    } catch (err) {
+      console.log(err.message)
+    } finally {
       setLoading(false);
-        if(res.status == 200){     
-           navigate('/products')
-        }
-    }).catch(err => {
-      console.log(err);
-      setLoading(false);
-    })
-  }
+    }
+
+    
 
  }
+}
 
 
     return (

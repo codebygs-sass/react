@@ -2,9 +2,23 @@ import React,{useState,useEffect} from "react";
 import Img1 from '../../assets/Lo.png'
 import { Flex } from 'antd';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 import Loader from "../Loader";
+import { getAuth, signOut } from "firebase/auth";
 
 const Product = () => {
+
+     const navigate = useNavigate();
+
+    useEffect(() => {
+      const token = sessionStorage.getItem('token') ?? '';
+      if (token) {
+        // Already logged in → go to dashboard
+        navigate("/products");
+      } else{
+        navigate('/signup')
+      }
+    }, []);
 
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -29,6 +43,25 @@ const Product = () => {
     console.log(res.data)
     setTranscript(res.data.transcript.result.results.channels[0].alternatives[0]);
   };
+
+  const handleLogOut = () => {
+     const auth = getAuth();
+     console.log(auth,"aut");
+  
+  signOut(auth)
+    .then(() => {
+      // Remove token from storage
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("firebase_user")
+
+      console.log("User logged out");
+    
+      window.location.href = process.env.REACT_APP_WEBSITE_URL;
+    })
+    .catch((error) => {
+      console.error("Logout error:", error);
+    });
+  }
     return (
         <>
          {loading && <Loader />}
@@ -44,6 +77,7 @@ const Product = () => {
               <img src={ Img1 }class="w-8 h-8 rounded bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow" />
           <span class="text-lg font-semibold tracking-tight text-gray-900"
             >Albetora NoteTaker</span>
+      
         </div>
 
     
@@ -97,6 +131,12 @@ const Product = () => {
             class="block px-4 py-3 rounded-lg bg-gradient-to-r from-blue-50 to-white hover:from-green-100 text-green-800 hover:shadow transition-all duration-200"
           >
              Settings
+          </a>
+             <a
+            onClick={() => handleLogOut()}
+            class="block px-4 py-3 rounded-lg bg-gradient-to-r from-blue-50 to-white hover:from-red-100 text-red-800 hover:shadow transition-all duration-200"
+          >
+             Log Out
           </a>
          
         </nav>
