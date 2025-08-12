@@ -89,7 +89,9 @@ import { auth } from "../../lib/firebaseClient";
           email: res.data.email,
           name: res.data.name
         }));
-            window.location.href = process.env.REACT_APP_EXTERNAL_URL_PRODUCTS;
+            // window.location.href = process.env.REACT_APP_EXTERNAL_URL_PRODUCTS;
+            navigate('/products')
+
         }
     })
   }catch(err) {
