@@ -5,11 +5,14 @@ import Img1 from '../../assets/Lo.png'
 import { useAuth } from "../../auth/AuthContext";
 import { signInWithEmailAndPassword,sendPasswordResetEmail  } from "firebase/auth";
 import { auth } from "../../lib/firebaseClient";
+import Loader from '../Loader/index';
 
  
  const Login = () => {
 
    const navigate = useNavigate();
+
+   const [loading, setLoading] = useState(true);
 
     useEffect(() => {
       const token = sessionStorage.getItem('token') ?? '';
@@ -71,7 +74,7 @@ import { auth } from "../../lib/firebaseClient";
  const handleSubmit = async (e) => {
     e.preventDefault();
     const isEmpty = Object.values(errors).every(x => x === null || x === '');
-
+    setLoading(true);
     if(isEmpty){
     const formData = {
         "email": email,
@@ -97,6 +100,7 @@ import { auth } from "../../lib/firebaseClient";
   }catch(err) {
      alert("Login failed: " + err.message);
   }
+  setLoading(false)
   }
  }
 
@@ -106,6 +110,7 @@ import { auth } from "../../lib/firebaseClient";
            <section
       className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center"
     >
+        {loading && <Loader />}
       <div
         className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 border border-gray-200"
       >

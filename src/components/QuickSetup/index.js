@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect,useRef} from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
 import Loader from '../Loader/index';
@@ -31,12 +31,40 @@ import { auth } from "../../lib/firebaseClient";
     terms: false
  })
 
+  const handleScroll = () => {
+    const element = termsRef.current;
+    if (element) {
+      const { scrollTop, scrollHeight, clientHeight } = element;
+
+      // Check if scrolled to bottom
+      if (scrollTop + clientHeight >= scrollHeight - 1) {
+        setIsChecked(true);
+        setIsDisabled(false);
+      }
+    }
+  };
+
  
   useEffect(() => {
     // Simulate loading
     const timeout = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(timeout);
   }, []);
+
+ const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const termsRef = useRef(null);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsChecked(false);
+    setIsDisabled(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
  const [errors,setErrors] = useState({
       fullName:"",
@@ -140,6 +168,8 @@ import { auth } from "../../lib/firebaseClient";
           
         </div>
         </a>
+
+  
      
         <div className="text-center mb-10">
           <h2 className="text-3xl font-extrabold text-gray-900">
@@ -271,21 +301,196 @@ onBlur={(e) => handleBlur(e)}
               id="terms"
               name="terms"
               type="checkbox"
-              value={checkbox}
-              required
-onChange={(e) => handleChange(e)}
+     checked={isChecked}
+          disabled={isDisabled}
+       
+          onChange={(e) => setIsChecked(e.target.checked)}
               className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
             />
             <label for="terms" className="ml-3 text-sm text-gray-700">
               I agree to the
-              <a href="#" className="text-blue-600 underline hover:text-blue-800"
-                >Terms</a>
+              <a    onClick={openModal} className="text-blue-600 underline hover:text-blue-800"
+                >Terms
               and
-              <a href="#" className="text-blue-600 underline hover:text-blue-800"
-                >Privacy Policy</a>
+              Privacy Policy</a>
             </label>
                             {errors.checkbox && <span style={{color:'red'}}>{errors.checkbox}</span>}
           </div>
+
+           {/* Modal */}
+      {isModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: "20px",
+              width: "400px",
+              maxHeight: "80vh",
+              borderRadius: "8px",
+              overflow: "hidden",
+            }}
+          >
+            <h3 style={{fontSize:'30px',}}>Terms & Conditions</h3>
+            <div
+              ref={termsRef}
+              onScroll={handleScroll}
+              style={{
+                height: "200px",
+                overflowY: "auto",
+                border: "1px solid #ccc",
+                padding: "10px",
+              }}
+            >
+                <div class="max-w-4xl mx-auto py-12 px-6">
+      <h1 class="text-4xl font-bold mb-6 text-center">
+        Terms and Conditions for Albetora Zoom App
+      </h1>
+      <p class="mb-2 text-sm text-gray-600 text-center">
+        Effective Date: August 5, 2025
+      </p>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">1. Acceptance of Terms</h2>
+        <p>
+          By installing and using the Albetora Zoom App, you agree to be bound
+          by these Terms and Conditions. If you do not agree to these terms,
+          please do not use the app.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">2. Use of the App</h2>
+        <p>
+          You may use the Albetora Zoom App only for its intended purpose:
+          assisting with AI-powered meeting note-taking. Misuse, unauthorized
+          reproduction, reverse engineering, or disruption of service is
+          strictly prohibited.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">3. User Responsibilities</h2>
+        <p>
+          You are responsible for maintaining the confidentiality of your Zoom
+          account and for any activity that occurs through your app integration.
+          You agree to provide accurate and current information and not to use
+          the app for unlawful purposes.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">4. Intellectual Property</h2>
+        <p>
+          All content, features, and functionality of the Albetora Zoom App are
+          the exclusive property of Albetora Technologies. You may not copy,
+          modify, or distribute any part of the app without prior written
+          permission.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">5. Termination</h2>
+        <p>
+          We reserve the right to suspend or terminate access to the app at our
+          discretion, without prior notice, if we believe you have violated
+          these terms or are engaged in fraudulent or harmful activity.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">6. Disclaimer of Warranty</h2>
+        <p>
+          The Albetora Zoom App is provided "as is" and "as available" without
+          warranties of any kind. We do not guarantee that the app will be
+          error-free, secure, or operate without interruption.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">7. Limitation of Liability</h2>
+        <p>
+          To the fullest extent permitted by law, Albetora Technologies shall
+          not be liable for any indirect, incidental, or consequential damages
+          resulting from your use of the app.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">8. Changes to Terms</h2>
+        <p>
+          We reserve the right to update these Terms and Conditions at any time.
+          Continued use of the app after any such changes constitutes your
+          acceptance of the new terms.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">9. Governing Law</h2>
+        <p>
+          These Terms and Conditions are governed by the laws of India. Any
+          disputes will be subject to the exclusive jurisdiction of the courts
+          located in Chennai, Tamil Nadu.
+        </p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-2">10. Contact Information</h2>
+        <p>
+          If you have any questions about these Terms, please contact us at:
+        </p>
+        <ul class="list-none ml-0 mt-2">
+          <li><strong>Company</strong>: Albetora.com</li>
+          <li>
+            <strong>Email</strong>:
+            <a
+              href="mailto:support@albetora.com"
+              class="text-blue-600 underline"
+              >contact@albetora.com</a
+            >
+          </li>
+          <li>
+            <strong>Website</strong>:
+            <a href="https://albetora.com" class="text-blue-600 underline"
+              >https://albetora.com</a >
+          </li>
+        </ul>
+      </section>
+    </div>
+               <div style={{ marginTop: "15px", textAlign: "right" }}>
+              <button
+                onClick={closeModal}
+                disabled={!isChecked}
+                style={{
+                  padding: "8px 15px",
+                  background: isChecked ? "#28a745" : "#ccc",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: isChecked ? "pointer" : "not-allowed",
+                }}
+              >
+                Accept
+              </button>
+            </div>
+              
+            </div>
+            
+          </div>
+        </div>
+      )}
 
           
           <div className="pt-4">
