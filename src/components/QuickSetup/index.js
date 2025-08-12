@@ -106,7 +106,7 @@ import { auth } from "../../lib/firebaseClient";
 });
       alert("Verification email sent. Please check your inbox.");
 
-            // navigate('/products')
+            navigate('/products')
     } catch (err) {
       console.log(err.message)
     } finally {
