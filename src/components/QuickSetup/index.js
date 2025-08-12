@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
 import Loader from '../Loader/index';
-import { createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile,sendEmailVerification } from "firebase/auth";
 import { auth } from "../../lib/firebaseClient";
 
  
@@ -100,8 +100,13 @@ import { auth } from "../../lib/firebaseClient";
             }))
                console.log("Token stored in sessionStorage:", token);
               alert("Account created successfully!");
+                    await sendEmailVerification(userCred.user, {
+  url: "https://auth.albetora.com/products", // Redirect after clicking link
+  handleCodeInApp: true,
+});
+      alert("Verification email sent. Please check your inbox.");
 
-            navigate('/products')
+            // navigate('/products')
     } catch (err) {
       console.log(err.message)
     } finally {

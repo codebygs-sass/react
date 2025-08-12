@@ -134,6 +134,7 @@ const Product = () => {
           </a>
              <a
             onClick={() => handleLogOut()}
+            style={{cursor:'pointer'}}
             class="block px-4 py-3 rounded-lg bg-gradient-to-r from-blue-50 to-white hover:from-red-100 text-red-800 hover:shadow transition-all duration-200"
           >
              Log Out

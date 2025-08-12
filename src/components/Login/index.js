@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
 import Img1 from '../../assets/Lo.png'
 import { useAuth } from "../../auth/AuthContext";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword,sendPasswordResetEmail  } from "firebase/auth";
 import { auth } from "../../lib/firebaseClient";
 
  
@@ -40,6 +40,22 @@ import { auth } from "../../lib/firebaseClient";
   } else{
     setErrors({...errors,[name]: ''})
   }
+ }
+
+ const handleForgotPassword = async () => {
+    try {
+      if(!email){
+        alert('Email is required.')
+        return false;
+      }
+      await sendPasswordResetEmail(auth, email, {
+        url: window.location.origin + "/login", // Redirect after reset
+        handleCodeInApp: false,
+      });
+      alert("Password reset email sent! Please check your inbox.");
+    } catch (error) {
+      alert(`${error.message}`);
+    }
  }
 
 
@@ -153,6 +169,11 @@ import { auth } from "../../lib/firebaseClient";
             />
             {errors.password && <span style={{color:'red'}}>{errors.password}</span>}
           </div>
+          <span
+          className="block text-sm font-medium text-blue-700"
+          style={{float:'right',margin:'10px',cursor:'pointer'}}
+          onClick={() => handleForgotPassword()}
+          >Forgot Password ?</span>
   
           <div className="pt-4">
             <button
