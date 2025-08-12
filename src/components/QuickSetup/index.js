@@ -337,7 +337,7 @@ onBlur={(e) => handleBlur(e)}
             style={{
               background: "#fff",
               padding: "20px",
-              width: "400px",
+              width: "100%",
               maxHeight: "80vh",
               borderRadius: "8px",
               overflow: "hidden",
