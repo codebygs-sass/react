@@ -338,7 +338,7 @@ onBlur={(e) => handleBlur(e)}
               background: "#fff",
               padding: "20px",
               width: "100%",
-              maxHeight: "80vh",
+              height: "100%",
               borderRadius: "8px",
               overflow: "hidden",
             }}
@@ -356,7 +356,7 @@ onBlur={(e) => handleBlur(e)}
             >
                 <div class="max-w-4xl mx-auto py-12 px-6">
       <h1 class="text-4xl font-bold mb-6 text-center">
-        Terms and Conditions for Albetora Zoom App
+        Terms and Conditions for Albetora 
       </h1>
       <p class="mb-2 text-sm text-gray-600 text-center">
         Effective Date: August 5, 2025
@@ -365,7 +365,7 @@ onBlur={(e) => handleBlur(e)}
       <section class="mb-8">
         <h2 class="text-2xl font-semibold mb-2">1. Acceptance of Terms</h2>
         <p>
-          By installing and using the Albetora Zoom App, you agree to be bound
+          By installing and using the Albetora, you agree to be bound
           by these Terms and Conditions. If you do not agree to these terms,
           please do not use the app.
         </p>
