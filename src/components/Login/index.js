@@ -6,6 +6,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { signInWithEmailAndPassword,sendPasswordResetEmail  } from "firebase/auth";
 import { auth } from "../../lib/firebaseClient";
 import Loader from '../Loader/index';
+import Swal from 'sweetalert2'
 
  
  const Login = () => {
@@ -99,6 +100,13 @@ import Loader from '../Loader/index';
     })
   }catch(err) {
      alert("Login failed: " + err.message);
+     Swal.fire({
+       position: "top-end",
+       icon: "error",
+       title: err.message,
+       showConfirmButton: true,
+       
+     });
   }
   setLoading(false)
   }

@@ -1,24 +1,27 @@
 import React,{useState,useEffect} from "react";
 import Img1 from '../../assets/Lo.png'
-import { Flex } from 'antd';
+import Img2 from '../../assets/us.png'
+import { Flex , Alert} from 'antd';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Loader from "../Loader";
 import { getAuth, signOut } from "firebase/auth";
 
+
+
 const Product = () => {
 
      const navigate = useNavigate();
 
-    useEffect(() => {
-      const token = sessionStorage.getItem('token') ?? '';
-      if (token) {
-        // Already logged in → go to dashboard
-        navigate("/products");
-      } else{
-        navigate('/signup')
-      }
-    }, []);
+    // useEffect(() => {
+    //   const token = sessionStorage.getItem('token') ?? '';
+    //   if (token) {
+    //     // Already logged in → go to dashboard
+    //     navigate("/products");
+    //   } else{
+    //     navigate('/signup')
+    //   }
+    // }, []);
 
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -43,6 +46,10 @@ const Product = () => {
     console.log(res.data)
     setTranscript(res.data.transcript.result.results.channels[0].alternatives[0]);
   };
+
+  const onClose = e => {
+  console.log(e, 'I was closed.');
+};
 
   const handleLogOut = () => {
      const auth = getAuth();
@@ -77,6 +84,15 @@ const Product = () => {
               <img src={ Img1 }class="w-8 h-8 rounded bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shadow" />
           <span class="text-lg font-semibold tracking-tight text-gray-900"
             >Albetora NoteTaker</span>
+
+        
+           <a href="#profile" class="ml-4" style={{position:'absolute',right:'100px'}}>
+            <img
+              src={Img2}
+              alt="Profile"
+              class="w-8 h-8 rounded-full border-2 border-gray-300 hover:border-blue-500 transition"
+            />
+          </a>
       
         </div>
 
@@ -165,6 +181,12 @@ const Product = () => {
         class="mt-4 md:ml-64 px-6 py-12 bg-gradient-to-br from-slate-50 via-white to-slate-50 min-h-screen space-y-20"
         style={{background:'white', width:'100%',marginLeft:'22% !important',borderRadius:'10px',boxShadow:'2px 10px 15px #cccccc'}}
       >
+        <Alert
+      message="Please check your inbox or spam and complete the verification process. "
+      type="warning"
+      closable
+      onClose={onClose}
+    />
    <Flex gap="middle" vertical >
      <div className="row">
       <div className="col-md-12">

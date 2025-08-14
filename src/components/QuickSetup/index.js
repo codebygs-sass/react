@@ -4,6 +4,8 @@ import Img1 from '../../assets/Lo.png'
 import Loader from '../Loader/index';
 import { createUserWithEmailAndPassword, updateProfile,sendEmailVerification } from "firebase/auth";
 import { auth } from "../../lib/firebaseClient";
+import Swal from 'sweetalert2'
+
 
  
  const QuickSetup = () => {
@@ -16,6 +18,7 @@ import { auth } from "../../lib/firebaseClient";
       // Already logged in → go to dashboard
       navigate("/products");
     }
+
   }, []);
 
 
@@ -127,15 +130,29 @@ import { auth } from "../../lib/firebaseClient";
       email:email,
             }))
                console.log("Token stored in sessionStorage:", token);
-              alert("Account created successfully!");
+              
                     await sendEmailVerification(userCred.user, {
   url: "https://auth.albetora.com/products", // Redirect after clicking link
   handleCodeInApp: true,
 });
-      alert("Verification email sent. Please check your inbox.");
+
+Swal.fire({
+  position: "top-end",
+  icon: "success",
+  title: "Verification email sent. Please check your inbox.",
+  showConfirmButton: true,
+});
+    
 
             navigate('/products')
     } catch (err) {
+Swal.fire({
+  position: "top-end",
+  icon: "error",
+  title: err.message,
+  showConfirmButton: true,
+  
+});
       console.log(err.message)
     } finally {
       setLoading(false);
@@ -302,7 +319,7 @@ onBlur={(e) => handleBlur(e)}
               name="terms"
               type="checkbox"
      checked={isChecked}
-          disabled={isDisabled}
+          
        
           onChange={(e) => setIsChecked(e.target.checked)}
               className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
