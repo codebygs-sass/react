@@ -23,6 +23,12 @@ import Swal from 'sweetalert2'
       }
     }, []);
 
+      useEffect(() => {
+        // Simulate loading
+        const timeout = setTimeout(() => setLoading(false), 3000);
+        return () => clearTimeout(timeout);
+      }, []);
+
  const [form,setForm] = useState({
     email:"",
     password:"",
@@ -79,7 +85,7 @@ import Swal from 'sweetalert2'
     if(isEmpty){
     const formData = {
         "email": email,
-        "password": password,
+        "password ": password,
     }
     try {
     const userCred = await signInWithEmailAndPassword(auth, email, password);
