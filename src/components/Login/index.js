@@ -19,7 +19,7 @@ import Swal from 'sweetalert2'
       const token = sessionStorage.getItem('token') ?? '';
       if (token) {
         // Already logged in → go to dashboard
-        navigate("/products");
+        navigate("/uploadfile");
       }
     }, []);
 

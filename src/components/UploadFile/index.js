@@ -1,15 +1,20 @@
 import React,{useState,useCallback,useEffect} from 'react';
 import { useDropzone } from "react-dropzone";
 import { auth } from "../../lib/firebaseClient";
+import { useNavigate,NavLink } from 'react-router-dom'
+import Sidebar from '../Sidebar';
+import Footer from '../Footer';
+import { updateDoc, deleteDoc,addDoc,getDocs, getDoc,setDoc,doc,getFirestore, collection } from "firebase/firestore";
+import axios from 'axios';
 import './index.css';
-import { updateDoc, arrayUnion,addDoc, getDoc,setDoc,doc,getFirestore, collection } from "firebase/firestore";
-import './index.css'
+
 
 
 const UploadFile = () => {
 
   const serverUrl = process.env.REACT_APP_SERVER_URL;
   const db = getFirestore();
+   const navigate = useNavigate();
   console.log(db);
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -17,6 +22,7 @@ const UploadFile = () => {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [userFiles, setUserFiles] = useState([]);
+  const [refreshFile,setRefreshFile] = useState(false);
 
 
 
@@ -42,6 +48,31 @@ const UploadFile = () => {
       });
       return () => unsubscribe();
     }, []);
+
+     useEffect(() => {
+    const fetchUserFiles = async () => {
+      if (!user) return;
+
+      try {
+        const filesRef = collection(db, "users", user.uid, "files");
+        const snapshot = await getDocs(filesRef);
+
+        const userFiles = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        console.log(userFiles,"filed");
+
+        setFiles(userFiles);
+      } catch (err) {
+        console.error("Error fetching files:", err);
+      } finally {
+        setRefreshFile(false);
+      }
+    };
+
+    fetchUserFiles();
+  }, [user,refreshFile]);
 
     
 
@@ -86,8 +117,6 @@ const UploadFile = () => {
         method: "POST",
         body: formData,
       });
-
-
       const data = await res.json();
 
       if(data.fileName){
@@ -97,11 +126,12 @@ const UploadFile = () => {
       const docRef = collection(db, "users", userId.uid,"files"); 
       
         await addDoc(docRef, {
-      
-          name: data.fileName,
+          name: data.name,
+          path: data.filePath,
+          fileName: data.fileName,
           size: data.size,
           status: 'Queued',
-          mimeType: data.mimeType,  
+          type: data.mimeType,  
           duration: data.duration,
           uploadedAt: new Date(),
       
@@ -116,8 +146,50 @@ const UploadFile = () => {
       alert("File upload failed!");
     } finally {
       setUploading(false);
+      setRefreshFile(true);
     }
   };
+
+  const handleFileStart = async (val,ind) => {
+    console.log(val,ind);
+    try{
+    const formData = new FormData();
+    formData.append("file", val.fileName);
+    const res = await axios.post(`${serverUrl}/api/upload`, formData);
+    console.log(res);
+    if(res.status === 200){
+      const userId = auth.currentUser;
+      console.log(userId);
+      const docRef = doc(db, "users", userId.uid,"files",val.id); 
+      console.log(docRef);
+            await updateDoc(docRef, {
+              transcribe:res.data.transcript.result,
+              status: 'Completed'
+    });
+      alert("Transcribe is completed!!");
+    }
+    } catch(err){
+      alert(err.message);
+    } finally{
+      setRefreshFile(true);
+    }
+  }
+
+  const handleDeleteFile = async (val) => {
+    try{
+    const docRef = doc(db, "users", userId.uid, "files", val.id);
+    await deleteDoc(docRef);
+    alert("File is Deleted!!");
+    } catch(err){
+     alert(err.message)
+    } finally{
+      setRefreshFile(true);
+    }
+  }
+
+  const handleOpenFile = (val) => {
+     navigate('/transcibe', { state: { file: val } });
+  }
 
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -129,54 +201,15 @@ const UploadFile = () => {
         <>
         <div className="bg-gradient-to-br from-brand-50/70 via-white to-brand-100/40 text-slate-800">
   <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
-   
-    <aside className="bg-white/80 backdrop-blur sticky top-0 h-full lg:h-screen border-r border-slate-200 shadow-soft hidden lg:flex flex-col">
-      <div className="px-5 pt-6 pb-4 flex items-center gap-3">
-        <div className="h-10 w-10 grid place-items-center rounded-xl bg-brand-600 text-white font-bold">VN</div>
-        <div>
-          <div className="text-sm uppercase tracking-wider text-brand-700 font-semibold">Voice Notes AI</div>
-          <div className="text-xs text-slate-500">Otter-like Transcription</div>
-        </div>
-      </div>
-      <nav className="mt-4 flex-1 overflow-y-auto scroll-slim">
-        <ul className="px-3 space-y-1 text-sm">
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="02-dashboard.html">Dashboard</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="03-record.html">Record</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="04-transcript.html">Transcript</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="05-search.html">Search</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg bg-brand-50 text-brand-700 font-medium" href="06-uploads.html">Uploads</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="07-settings.html">Settings</a></li>
-          <li className="pt-2"><div className="px-3 text-xs uppercase tracking-wide text-slate-400">More</div></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="08-billing.html">Billing</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="09-team.html">Team</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="10-calendar.html">Calendar</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="11-integrations.html">Integrations</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="12-bot.html">Meeting Bot</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="13-analytics.html">Analytics</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="14-admin.html">Admin</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="15-help.html">Help</a></li>
-          <li className="pt-2"><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="01-auth.html">Sign in / out</a></li>
-        </ul>
-      </nav>
-      <div className="p-4 mt-auto">
-        <div className="rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 text-white p-4">
-          <div className="text-sm opacity-90">Minutes used</div>
-          <div className="mt-1 flex items-end gap-2"><div className="text-2xl font-semibold">382</div><div className="text-xs opacity-80">/ 600</div></div>
-          <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden"><div className="h-full w-[64%] bg-white/90"></div></div>
-          <a href="08-billing.html" className="mt-3 inline-flex items-center gap-2 text-xs font-medium underline">Upgrade plan →</a>
-        </div>
-      </div>
-    </aside>
-
-   
+   <Sidebar/>
     <main className="flex flex-col min-h-screen">
   
       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">
         <div className="px-4 lg:px-8 py-3 flex items-center gap-3">
           <h1 className="text-lg md:text-xl font-semibold text-slate-900">Uploads</h1>
           <div className="ml-auto flex items-center gap-2 text-sm">
-            <a href="03-record.html" className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-brand-600 text-white px-3 py-1.5 shadow-soft hover:bg-brand-700">New recording</a>
-            <a href="07-settings.html" className="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img alt="avatar" src="https://i.pravatar.cc/40?img=5" className="h-8 w-8 rounded-full" /></a>
+            {/* <a href="03-record.html" className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-brand-600 text-white px-3 py-1.5 shadow-soft hover:bg-brand-700">New recording</a> */}
+             <NavLink to={'/settings'} class="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img alt="avatar" src={ user?.photoURL ?`${serverUrl}${user?.photoURL}`: `${serverUrl}/uploads/default.png`} class="h-8 w-8 rounded-full" /></NavLink>
           </div>
         </div>
       </header>
@@ -195,7 +228,7 @@ const UploadFile = () => {
               <div className="mt-3 flex items-center justify-center gap-2">
                 <input id="fileInput" type="file" accept="audio/*,video/*,.mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.mov,.mkv" multiple className="hidden" />
                 <button id="browseBtn" className="inline-flex items-center gap-2 rounded-xl bg-brand-600 text-white px-4 py-2 font-medium hover:bg-brand-700">Browse files</button>
-                <button id="sampleBtn" className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-medium">Add sample items</button>
+                {/* <button id="sampleBtn" className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 font-medium">Add sample items</button>  */}
               </div>
               <p className="mt-3 text-xs text-slate-500">Max file size 2 GB • Supported: MP3, WAV, M4A, AAC, OGG, FLAC, MP4, MOV, MKV</p>
             </div>
@@ -204,10 +237,10 @@ const UploadFile = () => {
             <div className="rounded-2xl border border-slate-200 bg-white/80 shadow-soft overflow-hidden">
               <div className="px-4 py-3 border-b flex items-center gap-3">
                 <h3 className="font-semibold">Queue</h3>
-                <div className="ml-auto flex items-center gap-2 text-sm">
+                {/* <div className="ml-auto flex items-center gap-2 text-sm">
                   <button id="startAll" className="px-3 py-1.5 rounded-lg bg-brand-600 text-white disabled:opacity-50">Start upload</button>
                   <button id="clearDone" className="px-3 py-1.5 rounded-lg border">Clear completed</button>
-                </div>
+                </div> */}
               </div>
               <div className="overflow-x-auto scroll-slim">
                 <table className="min-w-full text-sm">
@@ -230,12 +263,21 @@ const UploadFile = () => {
                               <td className='px-4 py-3'>{val.name}</td>
                               <td className='px-4 py-3'>{val.type}</td>
                               <td className='px-4 py-3'>{(val.size/1000000).toFixed(2)} MB</td>
-                              <td className='px-4 py-3'>Queued</td>
+                              <td className='px-4 py-3'>{val.status}</td>
                               <td className='px-4 py-3'>
                                 <div class="inline-flex gap-2">
-              <button class="start px-3 py-1.5 rounded-lg border text-sm">Start</button>
-              <button class="retry px-3 py-1.5 rounded-lg border text-sm hidden">Retry</button>
-              <button class="remove px-3 py-1.5 rounded-lg border text-sm">Remove</button>
+             {
+              val.status !== 'Completed' ? (
+                <>
+                <button class="start px-3 py-1.5 rounded-lg border text-sm" style={{background:"#a7c957",color:'#000'}} onClick={() => handleFileStart(val,ind)}>Start</button>
+             <button class="remove px-3 py-1.5 rounded-lg border text-sm" style={{background:"#d62828",color:'#fff'}} onClick={() => handleDeleteFile(val)}>Remove</button>
+                </>
+              ): (
+                <>
+                <button class="retry px-3 py-1.5 rounded-lg border text-sm" style={{backgroundColor:" rgb(37, 99, 235 )",color:'#fff'}}  onClick={() => handleOpenFile(val)}>Open</button>
+                </>
+              )
+             } 
             </div>
                               </td>
                             </tr>
@@ -251,7 +293,7 @@ const UploadFile = () => {
 
           
           <aside className="space-y-4">
-            <div className="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
+            {/* <div className="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
               <h3 className="font-semibold">Batch settings</h3>
               <div className="mt-3 space-y-3 text-sm">
                 <div>
@@ -287,7 +329,7 @@ const UploadFile = () => {
                 </div>
                 <button id="applyBatch" className="w-full mt-2 px-3 py-2 rounded-xl border">Apply to queue</button>
               </div>
-            </div>
+            </div> */}
 
             <div className="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
               <h3 className="font-semibold">Tips</h3>
@@ -302,17 +344,7 @@ const UploadFile = () => {
           </aside>
         </div>
       </section>
-
-      <footer className="px-4 lg:px-8 py-6 text-xs text-slate-500">
-        <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-          <div>© 2025 Voice Notes AI</div>
-          <div className="flex items-center gap-3">
-            <a href="15-help.html" className="hover:underline">Help</a>
-            <a href="#" className="hover:underline">Privacy</a>
-            <a href="#" className="hover:underline">Terms</a>
-          </div>
-        </div>
-      </footer>
+<Footer/>
     </main>
   </div>
 </div>

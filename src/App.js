@@ -56,6 +56,8 @@ const LoginPage = lazy(() => import("./components/Login"));
 const ProductPage = lazy(() => import("./components/Product")); 
 const UploadFile = lazy(() => import("./components/UploadFile"));
 const Settings = lazy(() => import("./components/Settings"));
+const Transcribe = lazy(() => import("./components/Transcribe"));
+
 
 
 
@@ -95,9 +97,14 @@ const Settings = lazy(() => import("./components/Settings"));
           } />
 
             <Route path="/settings" element={
-            
-               <Settings/>
-             
+              <ErrorBoundary>
+                <Settings/>
+              </ErrorBoundary>
+          } />
+              <Route path="/transcibe" element={
+              <ErrorBoundary>
+                <Transcribe/>
+              </ErrorBoundary>
           } />
 
              <Route path="/products" element={

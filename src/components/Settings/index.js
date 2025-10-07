@@ -1,8 +1,10 @@
 import { useState,useEffect } from 'react';
 import { auth } from "../../lib/firebaseClient";
 import { updateProfile } from 'firebase/auth';
-import './index.css';
 import { getFirestore, doc, setDoc,getDoc } from "firebase/firestore";
+import Sidebar from '../Sidebar';
+import Footer from '../Footer';
+import './index.css';
 
 
 const Settings = () => {
@@ -22,7 +24,7 @@ const Settings = () => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        console.log(currentUser.displayName)
+        console.log(currentUser)
         const docRef = doc(db, "users", currentUser.uid);
         const docSnap = await getDoc(docRef);
   
@@ -116,53 +118,14 @@ const handleProfile = (e) => {
         <>
             <div className="bg-gradient-to-br from-brand-50/70 via-white to-brand-100/40 text-slate-800">
   <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
-  
-    <aside className="bg-white/80 backdrop-blur sticky top-0 h-full lg:h-screen border-r border-slate-200 shadow-soft hidden lg:flex flex-col">
-      <div className="px-5 pt-6 pb-4 flex items-center gap-3">
-        <div className="h-10 w-10 grid place-items-center rounded-xl bg-brand-600 text-white font-bold">VN</div>
-        <div>
-          <div className="text-sm uppercase tracking-wider text-brand-700 font-semibold">Voice Notes AI</div>
-          <div className="text-xs text-slate-500">Otter-like Transcription</div>
-        </div>
-      </div>
-      <nav className="mt-4 flex-1 overflow-y-auto scroll-slim">
-        <ul className="px-3 space-y-1 text-sm">
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="02-dashboard.html">Dashboard</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="03-record.html">Record</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="04-transcript.html">Transcript</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="05-search.html">Search</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="06-uploads.html">Uploads</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg bg-brand-50 text-brand-700 font-medium" href="07-settings.html">Settings</a></li>
-          <li className="pt-2"><div className="px-3 text-xs uppercase tracking-wide text-slate-400">More</div></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="08-billing.html">Billing</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="09-team.html">Team</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="10-calendar.html">Calendar</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="11-integrations.html">Integrations</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="12-bot.html">Meeting Bot</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="13-analytics.html">Analytics</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="14-admin.html">Admin</a></li>
-          <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="15-help.html">Help</a></li>
-          <li className="pt-2"><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="01-auth.html">Sign in / out</a></li>
-        </ul>
-      </nav>
-      <div className="p-4 mt-auto">
-        <div className="rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 text-white p-4">
-          <div className="text-sm opacity-90">Minutes used</div>
-          <div className="mt-1 flex items-end gap-2"><div className="text-2xl font-semibold">382</div><div className="text-xs opacity-80">/ 600</div></div>
-          <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden"><div className="h-full w-[64%] bg-white/90"></div></div>
-          <a href="08-billing.html" className="mt-3 inline-flex items-center gap-2 text-xs font-medium underline">Upgrade plan →</a>
-        </div>
-      </div>
-    </aside>
-
-  
+  <Sidebar />
     <main className="flex flex-col min-h-screen">
     
       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">
         <div className="px-4 lg:px-8 py-3 flex items-center gap-3">
           <h1 className="text-lg md:text-xl font-semibold text-slate-900">Settings</h1>
           <div className="ml-auto flex items-center gap-2 text-sm">
-            <a href="03-record.html" className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-brand-600 text-white px-3 py-1.5 shadow-soft hover:bg-brand-700">New recording</a>
+            {/* <a href="03-record.html" className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-brand-600 text-white px-3 py-1.5 shadow-soft hover:bg-brand-700">New recording</a> */}
             <a href="07-settings.html" className="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img id="header_profilePic" alt="avatar" src={ user?.photoURL ?`${serverUrl}${user?.photoURL}`: `${serverUrl}/uploads/default.png`} className="h-8 w-8 rounded-full" /></a>
           </div>
         </div>
@@ -462,16 +425,7 @@ const handleProfile = (e) => {
           
         
 
-      <footer className="px-4 lg:px-8 py-6 text-xs text-slate-500">
-        <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-          <div>© 2025 Voice Notes AI</div>
-          <div className="flex items-center gap-3">
-            <a href="15-help.html" className="hover:underline">Help</a>
-            <a href="#" className="hover:underline">Privacy</a>
-            <a href="#" className="hover:underline">Terms</a>
-          </div>
-        </div>
-      </footer>
+     <Footer/>
     </main>
   </div>
 </div>

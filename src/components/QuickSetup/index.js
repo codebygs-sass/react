@@ -109,16 +109,9 @@ import Swal from 'sweetalert2'
       // Create the new user
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
 
-      await updateProfile(userCred.user, { displayName: fullName });
+      await updateProfile(userCred.user, { displayName: fullName,minutes: 600, used: 0 });
 
-    // // 3. Save details in Firestore
-    // await setDoc(doc(db, "users", userCred.user.uid), {
-    //   uid: userCred.user.uid,
-    //   fullName,
-    //   email,
-    //   createdAt: new Date()
-    // });
-      
+
       // Get their ID token
       const token = await userCred.user.getIdToken();
       console.log("User created! Token:", token);
@@ -132,7 +125,7 @@ import Swal from 'sweetalert2'
                console.log("Token stored in sessionStorage:", token);
               
                     await sendEmailVerification(userCred.user, {
-  url: "https://auth.albetora.com/products", // Redirect after clicking link
+  url: "https://auth.albetora.com/uploadfile", // Redirect after clicking link
   handleCodeInApp: true,
 });
 
@@ -144,7 +137,7 @@ Swal.fire({
 });
     
 
-            navigate('/products')
+            navigate('/uploadfile')
     } catch (err) {
 Swal.fire({
   position: "top-end",
