@@ -4,6 +4,8 @@ import { auth } from "../../lib/firebaseClient";
 import { useNavigate,NavLink } from 'react-router-dom'
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
+import { storage } from "../../lib/firebaseClient";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { updateDoc, deleteDoc,addDoc,getDocs, getDoc,setDoc,doc,getFirestore, collection } from "firebase/firestore";
 import axios from 'axios';
 import './index.css';
@@ -23,6 +25,7 @@ const UploadFile = () => {
   const [uploading, setUploading] = useState(false);
   const [userFiles, setUserFiles] = useState([]);
   const [refreshFile,setRefreshFile] = useState(false);
+  const [url,setUrl] = useState(null);
 
 
 
@@ -107,55 +110,53 @@ const UploadFile = () => {
 
     const uploadFiles = async (selectedFiles) => {
     const formData = new FormData();
-    selectedFiles.forEach((file) => {
-      formData.append("files", file);
-    });
-
-    try {
-      setUploading(true);
-      const res = await fetch(`${serverUrl}/api/uploadfile`, {
+    
+    selectedFiles.forEach(async (file) => {
+      if (!file) return alert("Please select a file");
+      
+      const fileRef = ref(storage, `uploads/${file.name}`);
+      try {
+        await uploadBytes(fileRef, file);
+        const downloadUrl = await getDownloadURL(fileRef);
+        formData.append("files", downloadUrl);
+    setUrl(downloadUrl)
+          const res = await fetch(`${serverUrl}/api/uploadfile`, {
         method: "POST",
-        body: formData,
+    body: JSON.stringify({
+    fileUrl:  downloadUrl
+  }),
       });
       const data = await res.json();
-
-      if(data.fileName){
-      
       const userId = auth.currentUser;
       console.log(userId);
       const docRef = collection(db, "users", userId.uid,"files"); 
       
         await addDoc(docRef, {
-          name: data.name,
-          path: data.filePath,
-          fileName: data.fileName,
-          size: data.size,
+          name: selectedFiles[0].name,
+          size: selectedFiles[0].size,
+          url: url,                                     
           status: 'Queued',
-          type: data.mimeType,  
+          type: selectedFiles[0].type,  
           duration: data.duration,
           uploadedAt: new Date(),
-      
-      });
+      })
+      setRefreshFile(true)
+              } catch (err) {
+                console.error("Upload error:", err);
+                alert("❌ Upload failed");
+              }
+    });
 
-      console.log("✅ File uploaded & saved:", data.fileName);
-    }
-      console.log("✅ Upload response:", data);
-      alert("File uploaded successfully!");
-    } catch (err) {
-      console.error("❌ Upload error:", err);
-      alert("File upload failed!");
-    } finally {
-      setUploading(false);
-      setRefreshFile(true);
-    }
+  
   };
 
   const handleFileStart = async (val,ind) => {
     console.log(val,ind);
     try{
-    const formData = new FormData();
-    formData.append("file", val.fileName);
-    const res = await axios.post(`${serverUrl}/api/upload`, formData);
+    
+    const res = await axios.post(`${serverUrl}/api/upload`, {
+      fileUrl: val.url
+    });
     console.log(res);
     if(res.status === 200){
       const userId = auth.currentUser;
