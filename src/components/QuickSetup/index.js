@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, updateProfile,sendEmailVerification,sig
 import { auth } from "../../lib/firebaseClient";
 import Swal from 'sweetalert2'
 import axios from 'axios'
-import './index.css'
+import './index.css';
 
 
  
