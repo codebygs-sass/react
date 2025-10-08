@@ -172,7 +172,7 @@ const allText = file?.transcribe?.results?.channels[0]?.alternatives[0]?.summari
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-              <input class="w-full rounded-lg border px-3 py-2 text-sm" value={file.name} />
+              <input disabled class="w-full rounded-lg border px-3 py-2 text-sm" value={file.name} />
               <span class="px-2 py-1 text-xs rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Completed</span>
               {/* <button class="px-3 py-1.5 rounded-lg border text-sm">Share</button>
               <button id="exportBtn" class="px-3 py-1.5 rounded-lg border text-sm">Export</button> */}
@@ -230,7 +230,7 @@ const allText = file?.transcribe?.results?.channels[0]?.alternatives[0]?.summari
         onChange={handleSeek}
         style={{width:'100%'}}
       />
-        <audio ref={audioRef} style={{display:'none'}} controls src={`${serverUrl}/uploads/${file.fileName}`} />
+        <audio ref={audioRef} style={{display:'none'}} controls src={file.url} />
 
               </div>
               {/* <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
