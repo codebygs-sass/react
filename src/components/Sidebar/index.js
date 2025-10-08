@@ -39,7 +39,7 @@ const Sidebar = () => {
           {/* <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="05-search.html">Search</a></li> */}
           <li><NavLink to={'/uploadfile'} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" >Uploads</NavLink></li>
           <li><NavLink to={'/settings'} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-brand-50 text-brand-700 font-medium" >Settings</NavLink></li>
-          <li><button tonClick={() => handleLogOut()} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-brand-50 text-brand-700 font-medium" style={{color:'red'}}>Log Out</button></li>
+          <li><button onClick={() => handleLogOut()} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-brand-50 text-brand-700 font-medium" style={{color:'red'}}>Log Out</button></li>
           {/* <li className="pt-2"><div className="px-3 text-xs uppercase tracking-wide text-slate-400">More</div></li> */}
           {/* <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="08-billing.html">Billing</a></li>
           <li><a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-brand-50" href="09-team.html">Team</a></li>
