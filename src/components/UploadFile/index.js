@@ -9,6 +9,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FaDownLong } from "react-icons/fa6";
 import { updateDoc, deleteDoc,addDoc,getDocs, getDoc,setDoc,doc,getFirestore, collection } from "firebase/firestore";
 import axios from 'axios';
+import Loader from '../Loader/index';
 import './index.css';
 
 
@@ -27,6 +28,7 @@ const UploadFile = () => {
   const [userFiles, setUserFiles] = useState([]);
   const [refreshFile,setRefreshFile] = useState(false);
   const [url,setUrl] = useState(null);
+   const [loading, setLoading] = useState(false);
 
 
 
@@ -110,8 +112,7 @@ const UploadFile = () => {
   }, []);
 
     const uploadFiles = async (selectedFiles) => {
-    const formData = new FormData();
-    
+      setLoading(true)  
     selectedFiles.forEach(async (file) => {
       if (!file) return alert("Please select a file");
       
@@ -119,32 +120,23 @@ const UploadFile = () => {
       try {
         await uploadBytes(fileRef, file);
         const downloadUrl = await getDownloadURL(fileRef);
-        formData.append("files", downloadUrl);
-    setUrl(downloadUrl)
-          const res = await fetch(`${serverUrl}/api/uploadfile`, {
-        method: "POST",
-    body: JSON.stringify({
-    fileUrl:  downloadUrl
-  }),
-      });
-      const data = await res.json();
-      const userId = auth.currentUser;
-      console.log(userId);
-      const docRef = collection(db, "users", userId.uid,"files"); 
-      
+        setUrl(downloadUrl)
+        const userId = auth.currentUser;
+        const docRef = collection(db, "users", userId.uid,"files"); 
         await addDoc(docRef, {
           name: selectedFiles[0].name,
           size: selectedFiles[0].size,
-          url: data.filePath,                                     
+          url: downloadUrl,                                     
           status: 'Queued',
           type: selectedFiles[0].type,  
-          duration: data.duration,
           uploadedAt: new Date(),
       })
       setRefreshFile(true)
               } catch (err) {
                 console.error("Upload error:", err);
                 alert("❌ Upload failed");
+              } finally {
+                setLoading(false);
               }
     });
 
@@ -153,6 +145,7 @@ const UploadFile = () => {
 
   const handleFileStart = async (val,ind) => {
     console.log(val);
+    setLoading(true);
     try{
     
     const res = await axios.post(`${serverUrl}/api/upload`, {
@@ -174,6 +167,7 @@ const UploadFile = () => {
       alert(err.message);
     } finally{
       setRefreshFile(true);
+      setLoading(false);
     }
   }
 
@@ -204,6 +198,7 @@ const UploadFile = () => {
         <div className="bg-gradient-to-br from-brand-50/70 via-white to-brand-100/40 text-slate-800">
   <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
    <Sidebar/>
+   {loading && <Loader />}
     <main className="flex flex-col min-h-screen">
   
       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">
