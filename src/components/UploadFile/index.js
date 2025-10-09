@@ -6,6 +6,7 @@ import Sidebar from '../Sidebar';
 import Footer from '../Footer';
 import { storage } from "../../lib/firebaseClient";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { FaDownLong } from "react-icons/fa6";
 import { updateDoc, deleteDoc,addDoc,getDocs, getDoc,setDoc,doc,getFirestore, collection } from "firebase/firestore";
 import axios from 'axios';
 import './index.css';
@@ -134,7 +135,7 @@ const UploadFile = () => {
         await addDoc(docRef, {
           name: selectedFiles[0].name,
           size: selectedFiles[0].size,
-          url: url,                                     
+          url: data.filePath,                                     
           status: 'Queued',
           type: selectedFiles[0].type,  
           duration: data.duration,
@@ -151,7 +152,7 @@ const UploadFile = () => {
   };
 
   const handleFileStart = async (val,ind) => {
-    console.log(val,ind);
+    console.log(val);
     try{
     
     const res = await axios.post(`${serverUrl}/api/upload`, {
@@ -223,7 +224,7 @@ const UploadFile = () => {
          
             <div id="drop"  {...getRootProps()} className={`rounded-2xl border-2 border-dashed border-brand-300 bg-white/70 shadow-soft p-6 text-center ${isDragActive ? "bg-blue-100" : "bg-gray-50"}`}>
              <input {...getInputProps()} />
-              <div className="mx-auto h-12 w-12 rounded-xl bg-brand-600 text-white grid place-items-center">⬆️</div>
+              <div className="mx-auto h-12 w-12 rounded-xl bg-brand-600 text-white grid place-items-center"><FaDownLong size={20} color='white' /></div>
               <h2 className="mt-3 text-lg font-semibold text-slate-900">Drag & drop audio/video</h2>
               <p className="text-slate-600 text-sm">or</p>
               <div className="mt-3 flex items-center justify-center gap-2">
