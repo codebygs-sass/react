@@ -166,20 +166,7 @@ Swal.fire({
     try {
     const userCred = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCred.user.getIdToken();
-
-    axios.post(`${serverUrl}/api/login`, { idToken: token }).then((res) => {
-        if(res.status == 200){     
-        sessionStorage.setItem('token',token);
-        sessionStorage.setItem('firebase_user', JSON.stringify({
-          uid: res.data.uid,
-          email: res.data.email,
-          name: res.data.name
-        }));
-            // window.location.href = process.env.REACT_APP_EXTERNAL_URL_PRODUCTS;
-            navigate('/uploadfile')
-
-        }
-    })
+      navigate('/uploadfile')
   }catch(err) {
      alert("Login failed: " + err.message);
      Swal.fire({
