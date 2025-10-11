@@ -39,7 +39,7 @@ const Product = () => {
     const formData = new FormData();
     formData.append("file", file);
     setLoading(true);
-    const res = await axios.post(`${serverUrl}/api/upload`, formData);
+    const res = await axios.post(`${serverUrl}/api/zoom`, formData);
     if(res.status === 200){
       setLoading(false)
     }
