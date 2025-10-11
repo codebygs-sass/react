@@ -147,18 +147,33 @@ const UploadFile = () => {
     console.log(val);
     setLoading(true);
     try{
+        const downloadRes = await fetch(`${serverUrl}/api/upload`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fileUrl:val.url }),
+  });
+  const { fileId } = await downloadRes.json();
+
+  // 2️⃣ Transcribe
+  const transcribeRes = await fetch(`${serverUrl}/api/transcribe`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fileId }),
+  });
+  const res = await transcribeRes.json();
+
     
-    const res = await axios.post(`${serverUrl}/api/upload`, {
-      fileUrl: val.url
-    });
-    console.log(res);
-    if(res.status === 200){
+    // const res = await axios.post(`${serverUrl}/api/upload`, {
+    //   fileUrl: val.url
+    // });
+    // console.log(res);
+    if(res){
       const userId = auth.currentUser;
       console.log(userId);
       const docRef = doc(db, "users", userId.uid,"files",val.id); 
       console.log(docRef);
             await updateDoc(docRef, {
-              transcribe:res.data.transcript.result,
+              transcribe:res.transcript.result,
               status: 'Completed'
     });
       alert("Transcribe is completed!!");
