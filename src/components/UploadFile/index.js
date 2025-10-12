@@ -147,18 +147,18 @@ const UploadFile = () => {
     console.log(val);
     setLoading(true);
     try{
-        const downloadRes = await fetch(`${serverUrl}/api/upload`, {
+        const downloadRes = await fetch(` https://us-central1-codebygs-4265d.cloudfunctions.net/downloadAndTranscribe`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ fileUrl:val.url }),
+    body: JSON.stringify({ fileUrl:val.url,action:'download' }),
   });
   const { fileId } = await downloadRes.json();
 
   // 2️⃣ Transcribe
-  const transcribeRes = await fetch(`${serverUrl}/api/transcribe`, {
+  const transcribeRes = await fetch(` https://us-central1-codebygs-4265d.cloudfunctions.net/downloadAndTranscribe`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ fileId }),
+    body: JSON.stringify({ fileId:fileId,action:'transcribe' }),
   });
   const res = await transcribeRes.json();
 
@@ -169,11 +169,11 @@ const UploadFile = () => {
     // console.log(res);
     if(res){
       const userId = auth.currentUser;
-      console.log(userId);
+      console.log(userId,res);
       const docRef = doc(db, "users", userId.uid,"files",val.id); 
       console.log(docRef);
             await updateDoc(docRef, {
-              transcribe:res.transcript.result,
+              transcribe:res.transcript,
               status: 'Completed'
     });
       alert("Transcribe is completed!!");
