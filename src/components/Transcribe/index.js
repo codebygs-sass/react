@@ -1,11 +1,14 @@
 import {useState,useEffect,useRef} from 'react';
-import { auth } from "../../lib/firebaseClient";
+import { auth, storage } from "../../lib/firebaseClient";
 import { NavLink, useLocation,useNavigate } from 'react-router-dom';
 import { getFirestore } from "firebase/firestore";
 import { FaPlay,FaPause  } from "react-icons/fa";
+import Image from '../../assets/us.png'
 import Sidebar from '../Sidebar';
 import Footer from '../Footer'
 import './index.css';
+
+
 
 
 const Transcribe = () => {
@@ -18,6 +21,7 @@ const Transcribe = () => {
   console.log(file);
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
+
 
     useEffect(() => {
       // Listen to auth state changes
@@ -32,6 +36,7 @@ const Transcribe = () => {
       });
       return () => unsubscribe();
     }, []);
+
 
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -178,7 +183,7 @@ const allText = file?.transcribe?.results?.channels[0]?.alternatives[0]?.summari
               <button id="exportBtn" class="px-3 py-1.5 rounded-lg border text-sm">Export</button> */}
             </div>
           </div>
-          <NavLink to={'/settings'} class="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img alt="avatar" src={ user?.photoURL ?`${serverUrl}${user?.photoURL}`: `${serverUrl}/uploads/default.png`} class="h-8 w-8 rounded-full" /></NavLink>
+          <NavLink to={'/settings'} class="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img alt="avatar" src={ user?.photoURL ? user?.photoURL: Image} class="h-8 w-8 rounded-full" /></NavLink>
         </div>
       </header>
 
@@ -355,7 +360,7 @@ const allText = file?.transcribe?.results?.channels[0]?.alternatives[0]?.summari
               </div>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
+            {file?.structured?.action_items && (<div class="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
               <h3 class="font-semibold">Action items</h3>
               <ol class="mt-2 list-decimal pl-5 text-sm text-slate-700">
                 {
@@ -367,12 +372,10 @@ const allText = file?.transcribe?.results?.channels[0]?.alternatives[0]?.summari
                     )
                   })
                 }
-                <li>Bob: finalize API docs (Thu EOD).</li>
-                <li>Carol: integrate analytics (Fri AM).</li>
-                <li>Alice: schedule QA and device procurement.</li>
+               
               </ol>
-              <div class="mt-3 text-xs text-slate-500">Export to Trello/Asana from Integrations.</div>
-            </div>
+           
+            </div>)}
 
             <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
               <h3 class="font-semibold">Keywords</h3>

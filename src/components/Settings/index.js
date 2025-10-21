@@ -1,7 +1,9 @@
 import { useState,useEffect } from 'react';
-import { auth } from "../../lib/firebaseClient";
+import { auth,storage } from "../../lib/firebaseClient";
 import { updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc,getDoc } from "firebase/firestore";
+import Image from '../../assets/us.png'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
 import './index.css';
@@ -30,6 +32,7 @@ const Settings = () => {
   
         if (docSnap.exists()) {
           console.log("Updated user data:", docSnap.data());
+          setUrl(docSnap.data().photoURL);
           setInputs({...inputs,timezone:docSnap.data().timezone, org:docSnap.data().org,displayName:currentUser.displayName,email:currentUser.email})
         }else{
           setInputs({...inputs,displayName:currentUser.displayName,email:currentUser.email})
@@ -62,28 +65,26 @@ const [uploading, setUploading] = useState(false);
     
     const idToken = await auth.currentUser?.getIdToken(true);
     console.log(idToken,"token");
+     const storageRef = ref(storage, `images/${file.name}`);
 
 
     
-  const formData = new FormData();
-    formData.append("file", file);
-    formData.append('token', sessionStorage.getItem('token'));
+   const snapshot = await uploadBytes(storageRef, file);
+      console.log('File uploaded successfully:', snapshot);
+
+      // Get the download URL
+      const downloadURL = await getDownloadURL(snapshot.ref);
 
     // Send URL to backend to update user profile
-    const res = await fetch(`${serverUrl}/api/profileupload`, {
-      method: "POST",
-      body: formData,
-    });
 
-       const data = await res.json();
 
-    if (data.success) {
+    
   if (!user) throw new Error('User not logged in');
-  const photoURL = data?.photoURL;
-  setUrl(photoURL);
-  await updateProfile(user, { photoURL });
+  
+  setUrl(downloadURL);
+  await updateProfile(user, { photoURL:downloadURL });
       alert("Profile picture updated!");
-    }
+    
   };
 
   const handleDataSave = async () => {
@@ -126,7 +127,7 @@ const handleProfile = (e) => {
           <h1 className="text-lg md:text-xl font-semibold text-slate-900">Settings</h1>
           <div className="ml-auto flex items-center gap-2 text-sm">
             {/* <a href="03-record.html" className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-brand-600 text-white px-3 py-1.5 shadow-soft hover:bg-brand-700">New recording</a> */}
-            <a href="07-settings.html" className="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img id="header_profilePic" alt="avatar" src={ user?.photoURL ?`${serverUrl}${user?.photoURL}`: `${serverUrl}/uploads/default.png`} className="h-8 w-8 rounded-full" /></a>
+            <a href="07-settings.html" className="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img id="header_profilePic" alt="avatar" src={ user?.photoURL ? user.photoURL: Image} className="h-8 w-8 rounded-full" /></a>
           </div>
         </div>
       </header>
@@ -184,7 +185,7 @@ const handleProfile = (e) => {
                 </div>
                   <div  className="rounded-xl border p-4 bg-white">
                     <div  className="flex items-center gap-3">
-                      <img id="profile-img" className="h-12 w-12 rounded-full" src={ user?.photoURL ?`${serverUrl}${user?.photoURL}`: `${serverUrl}/uploads/default.png`} alt="avatar"/>
+                      <img id="profile-img" className="h-12 w-12 rounded-full" src={ user?.photoURL ?user?.photoURL: Image} alt="avatar"/>
                       <div>
                         <div className="font-medium">Your avatar</div>
                         <div className="text-xs text-slate-500">PNG/JPG up to 2MB</div>

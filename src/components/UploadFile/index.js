@@ -4,11 +4,11 @@ import { auth } from "../../lib/firebaseClient";
 import { useNavigate,NavLink } from 'react-router-dom'
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
+import Image from '../../assets/us.png'
 import { storage } from "../../lib/firebaseClient";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FaDownLong } from "react-icons/fa6";
-import { updateDoc, deleteDoc,addDoc,getDocs, getDoc,setDoc,doc,getFirestore, collection } from "firebase/firestore";
-import axios from 'axios';
+import { updateDoc, deleteDoc,addDoc,getDocs, getDoc,setDoc,doc,getFirestore, collection } from "firebase/firestore"
 import Loader from '../Loader/index';
 import './index.css';
 
@@ -24,8 +24,6 @@ const UploadFile = () => {
   const [userId, setUserId] = useState(null);
   const [userRef, setUserRef] = useState(null);
   const [files, setFiles] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const [userFiles, setUserFiles] = useState([]);
   const [refreshFile,setRefreshFile] = useState(false);
   const [url,setUrl] = useState(null);
    const [loading, setLoading] = useState(false);
@@ -223,7 +221,7 @@ const UploadFile = () => {
           <h1 className="text-lg md:text-xl font-semibold text-slate-900">Uploads</h1>
           <div className="ml-auto flex items-center gap-2 text-sm">
             {/* <a href="03-record.html" className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-brand-600 text-white px-3 py-1.5 shadow-soft hover:bg-brand-700">New recording</a> */}
-             <NavLink to={'/settings'} class="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img alt="avatar" src={ user?.photoURL ?`${serverUrl}${user?.photoURL}`: `${serverUrl}/uploads/default.png`} class="h-8 w-8 rounded-full" /></NavLink>
+             <NavLink to={'/settings'} class="inline-flex items-center gap-2 p-1.5 rounded-full border border-slate-200 hover:bg-brand-50"><img alt="avatar" src={ user?.photoURL ? user.photoURL: Image} class="h-8 w-8 rounded-full" /></NavLink>
           </div>
         </div>
       </header>
