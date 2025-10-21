@@ -354,26 +354,40 @@ const allText = file?.transcribe?.results?.channels[0]?.alternatives[0]?.summari
                 {/* <button class="px-3 py-1.5 rounded-lg border">Regenerate</button> */}
               </div>
             </div>
-{/* 
+
             <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
               <h3 class="font-semibold">Action items</h3>
               <ol class="mt-2 list-decimal pl-5 text-sm text-slate-700">
+                {
+                  file?.structured?.action_items?.map((val,ind) => {
+                    return (
+                      <>
+                      <li>{val.title}{val.owner ? `-${val.owner}` : null}{val.due ? `-${new Date(val.due).toShortFormat()}`: null}</li>
+                      </>
+                    )
+                  })
+                }
                 <li>Bob: finalize API docs (Thu EOD).</li>
                 <li>Carol: integrate analytics (Fri AM).</li>
                 <li>Alice: schedule QA and device procurement.</li>
               </ol>
               <div class="mt-3 text-xs text-slate-500">Export to Trello/Asana from Integrations.</div>
-            </div> */}
+            </div>
 
-            {/* <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
+            <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
               <h3 class="font-semibold">Keywords</h3>
               <div class="mt-2 flex flex-wrap gap-2 text-sm">
-                <span class="px-2 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200">auth</span>
-                <span class="px-2 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200">analytics</span>
-                <span class="px-2 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200">onboarding</span>
-                <span class="px-2 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200">QA</span>
+                {
+                  file?.structured.keywords.map((val) =>{
+                    return (
+                      <>
+                      <span class="px-2 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200">{val}</span>
+                      </>
+                    )
+                  })
+                }
               </div>
-            </div> */}
+            </div>
 
             {/* <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-soft p-4">
               <h3 class="font-semibold">Entities</h3>

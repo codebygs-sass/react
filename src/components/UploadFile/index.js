@@ -174,6 +174,8 @@ const UploadFile = () => {
       console.log(docRef);
             await updateDoc(docRef, {
               transcribe:res.transcript,
+              structured: res.structured,
+              finalTranscript: res.finalTranscript,
               status: 'Completed'
     });
       alert("Transcribe is completed!!");
