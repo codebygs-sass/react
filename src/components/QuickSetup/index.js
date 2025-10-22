@@ -1,25 +1,34 @@
-import { useState,useEffect,useRef} from "react";
+import { useState,useEffect,useRef,useMemo} from "react";
+import React from "react";
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile,sendEmailVerification,signInWithEmailAndPassword,sendPasswordResetEmail  } from "firebase/auth";
-import { auth } from "../../lib/firebaseClient";
+import { auth,db } from "../../lib/firebaseClient";
 import Swal from 'sweetalert2'
-import axios from 'axios'
+import {addDoc,collection} from 'firebase/firestore'
+import { notification } from 'antd';
 import './index.css';
+
 
 
  
  const QuickSetup = () => {
 
   const navigate = useNavigate();
+  const Context = React.createContext({ name: 'Default' });
+   const [api, contextHolder] = notification.useNotification();
 
-  useEffect(() => {
-    const token = sessionStorage.getItem('token') ?? '';
-    if (token) {
-      // Already logged in → go to dashboard
-      navigate("/products");
-    }
 
-  }, []);
+     const openNotification = (message,description,type) => {
+    api[type]({
+      message: `${message}`,
+      description: <Context.Consumer>{() => `${description}`}</Context.Consumer>,
+      placement:'topRight',
+    });
+  };
+
+   const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
+ 
+
 
 const [show,setShow] = useState(false);
 
@@ -110,7 +119,11 @@ const [show,setShow] = useState(false);
       // Create the new user
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
 
-      await updateProfile(userCred.user, { displayName: fullName,minutes: 600, used: 0 });
+      await updateProfile(userCred.user, { displayName: fullName });
+
+      console.log(userCred.user)
+
+
 
 
       // Get their ID token
@@ -130,29 +143,30 @@ const [show,setShow] = useState(false);
   handleCodeInApp: true,
 });
 
-Swal.fire({
-  position: "top-end",
-  icon: "success",
-  title: "Verification email sent. Please check your inbox.",
-  showConfirmButton: true,
-});
-    
+openNotification('SignUp Completed!','Verification email sent. Please check your inbox.','success')
 
-            navigate('/uploadfile')
+
+    
+        // const docRef = collection(db, "usedMinutes", userCred.user.uid,); 
+        //       await addDoc(docRef, {
+        //         usedMinutes: 0,
+        //         minutesRemaining: null,
+        //         updatedAt: new Date(),
+        //     })
+      
+
+            navigate('/dashboard')
     } catch (err) {
-Swal.fire({
-  position: "top-end",
-  icon: "error",
-  title: err.message,
-  showConfirmButton: true,
-  
-});
+
+      openNotification('SignUp Failed!',err.message,'error')
+
       console.log(err.message)
     } finally {
       setLoading(false);
     }
  }
 }
+
 
  const handleSubmitSignIn = async (e) => {
     e.preventDefault();
@@ -166,7 +180,7 @@ Swal.fire({
     try {
     const userCred = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCred.user.getIdToken();
-      navigate('/uploadfile')
+      navigate('/dashboard')
   }catch(err) {
      alert("Login failed: " + err.message);
      Swal.fire({
@@ -199,7 +213,8 @@ Swal.fire({
  }
 
     return (
-
+<>
+  {contextHolder}
       <div class="bg-gradient-to-br from-brand-50/70 via-white to-brand-100/40 text-slate-800">
   <div class="min-h-screen grid grid-cols-1 lg:grid-cols-[1fr_520px]">
     
@@ -375,6 +390,7 @@ onBlur={(e) => handleBlur(e)}
   </div>
   
 </div>
+</>
         
   
         

@@ -57,11 +57,10 @@ const ProductPage = lazy(() => import("./components/Product"));
 const UploadFile = lazy(() => import("./components/UploadFile"));
 const Settings = lazy(() => import("./components/Settings"));
 const Transcribe = lazy(() => import("./components/Transcribe"));
+const Dashboard = lazy(() => import("./components/Dashboard"));
 
 
-
-
-  
+ 
   return (
      <AuthProvider>
      <Router>
@@ -112,6 +111,12 @@ const Transcribe = lazy(() => import("./components/Transcribe"));
                <ProductPage/>
              </ErrorBoundary>
           } />
+            <Route path="/dashboard" element={
+             <ErrorBoundary>
+               <Dashboard/>
+             </ErrorBoundary>
+          } />
+
 
       </Routes>
       </Suspense>
