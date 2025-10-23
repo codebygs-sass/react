@@ -14,6 +14,7 @@ const Settings = () => {
  const db = getFirestore();
  const [user, setUser] = useState(null);
  const [section,setSection] = useState('Profile')
+ const [usedMinutesData,setUsedMinutesData] = useState([]);
 
  const [inputs,setInputs] = useState({
    org:"",
@@ -119,7 +120,7 @@ const handleProfile = (e) => {
         <>
             <div className="bg-gradient-to-br from-brand-50/70 via-white to-brand-100/40 text-slate-800">
   <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
-  <Sidebar />
+  <Sidebar setUserData={setUser} minuteData={setUsedMinutesData}/>
     <main className="flex flex-col min-h-screen">
     
       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">

@@ -21,21 +21,8 @@ const Transcribe = () => {
   console.log(file);
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [usedMinutesData,setUsedMinutesData] = useState([]);
 
-
-    useEffect(() => {
-      // Listen to auth state changes
-      const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-        if (currentUser) {
-          setUser(currentUser);
-          setUserId(currentUser.uid)
-          
-        } else {
-          setUser(null);
-        }
-      });
-      return () => unsubscribe();
-    }, []);
 
 
   const audioRef = useRef(null);
@@ -165,7 +152,8 @@ const allText = file?.transcribe?.results?.channels[0]?.alternatives[0]?.summari
         <>
  <div class="bg-gradient-to-br from-brand-50/70 via-white to-brand-100/40 text-slate-800">
   <div class="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
-   <Sidebar/>
+    <Sidebar setUserData={setUser} minuteData={setUsedMinutesData}/>
+  
     <main class="flex flex-col min-h-screen">
       
       <header class="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-slate-200">

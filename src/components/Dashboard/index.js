@@ -6,6 +6,8 @@ import './index.css';
 import { collection,getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebaseClient';
 import { NavLink, useNavigate } from 'react-router-dom';
+import Loader from '../Loader';
+
 
 
 
@@ -17,6 +19,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
       const [files, setFiles] = useState([]);
        const [usedMinutesData,setUsedMinutesData] = useState([]);
+       const [loading, setLoading] = useState(false);
 
            useEffect(() => {
           const fetchUserFiles = async () => {
@@ -52,6 +55,7 @@ const Dashboard = () => {
   <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
   
   <Sidebar setUserData={setUser} minuteData={setUsedMinutesData}/>
+     {loading && <Loader />}
 
    
     <main className="flex flex-col min-h-screen">

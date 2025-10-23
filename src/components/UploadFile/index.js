@@ -21,6 +21,7 @@ const UploadFile = () => {
    const navigate = useNavigate();
   console.log(db);
   const [user, setUser] = useState(null);
+   const [usedMinutesData,setUsedMinutesData] = useState([]);
   const [userId, setUserId] = useState(null);
   const [userRef, setUserRef] = useState(null);
   const [files, setFiles] = useState([]);
@@ -30,28 +31,7 @@ const UploadFile = () => {
 
 
 
-    useEffect(() => {
-      // Listen to auth state changes
-      const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-        if (currentUser) {
-          setUser(currentUser);
-          setUserId(currentUser.uid)
-             const userRef = doc(db, "users", currentUser.uid);
-              setUserRef(userRef);
-              const docSnap = await getDoc(userRef);
-              if (docSnap.exists()) {
-  console.log("User document data:", docSnap.data());
-} else {
-  console.log("No such user document!");
-}
-              
-              console.log(userRef);
-        } else {
-          setUser(null);
-        }
-      });
-      return () => unsubscribe();
-    }, []);
+  
 
      useEffect(() => {
     const fetchUserFiles = async () => {
@@ -212,7 +192,7 @@ const UploadFile = () => {
         <>
         <div className="bg-gradient-to-br from-brand-50/70 via-white to-brand-100/40 text-slate-800">
   <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[280px_1fr]">
-   <Sidebar/>
+     <Sidebar setUserData={setUser} minuteData={setUsedMinutesData}/>
    {loading && <Loader />}
     <main className="flex flex-col min-h-screen">
   
