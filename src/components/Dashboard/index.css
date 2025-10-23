@@ -1,0 +1,26 @@
+    html { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; }
+    .scroll-slim { scrollbar-width: thin; }
+    .scroll-slim::-webkit-scrollbar { height: 8px; width: 8px; }
+    .scroll-slim::-webkit-scrollbar-thumb { background: rgba(30,64,175,.35); border-radius: 8px; }
+    .drop-active { outline: 3px dashed #2563eb; outline-offset: -6px; background: rgba(59,130,246,0.06); }
+
+.bg-brand-600 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
+}
+
+.to-brand-800 {
+    --tw-gradient-to: #1e40af;
+}
+
+.from-brand-600 {
+    --tw-gradient-from: #2563eb;
+    --tw-gradient-to: rgb(37 99 235 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.bg-gradient-to-br .to-brand-800 {
+    background-image: linear-gradient(270deg,#1e40af 28%, rgba(36, 93, 225, 1) 64%);
+
+}
+

@@ -1,12 +1,12 @@
 import React,{useState,useEffect} from "react";
 import { NavLink } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import {getDoc,doc, getFirestore} from 'firebase/firestore'
+import {getDocs,doc, getFirestore,collection} from 'firebase/firestore'
 import { auth } from "../../lib/firebaseClient";
 
 
 
-const Sidebar = () => {
+const Sidebar = ({setUserData,minuteData}) => {
 
   const [user,setUser] = useState([]);
   const [usedMinutesData,setUsedMinutesData] = useState([]);
@@ -18,14 +18,27 @@ const Sidebar = () => {
         if (currentUser) {
           setUser(currentUser);
           console.log(currentUser);
-          // const docRef = doc(db, "usedMinutes", currentUser.uid);
-          //            const docSnap = await getDoc(docRef);
-          //  if (docSnap.exists()) {
-          //   console.log("User document data:", docSnap.data());
-          //   setUsedMinutesData(docSnap.data());
-          // } else {
-          //   console.log( "No such user document!");
-          // }
+          setUserData(currentUser)
+          const colRef = collection(db, "usedMinutes", currentUser.uid, "usedMinutes");
+          const querySnapshot = await getDocs(colRef);
+          let data = [];
+
+          querySnapshot.forEach(doc => {
+            console.log(doc.id, " => ", doc.data());
+            const values = {
+              id: doc.id,
+              ...doc.data()
+            }
+
+            data.push(values);
+          });
+           if (data.length > 0) {
+            console.log(data,"Data");
+            setUsedMinutesData(data);
+            minuteData(data);
+          } else {
+            console.log( "No such user document!");
+          }
           
         } else {
           setUser(null);
@@ -90,7 +103,7 @@ const Sidebar = () => {
       <div className="p-4 mt-auto">
         <div className="rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 text-white p-4">
           <div className="text-sm opacity-90">Minutes used</div>
-          <div className="mt-1 flex items-end gap-2"><div className="text-2xl font-semibold">0</div><div className="text-xs opacity-80"></div></div>
+          <div className="mt-1 flex items-end gap-2"><div className="text-2xl font-semibold">{usedMinutesData[0]?.usedMinutes}</div><div className="text-xs opacity-80"></div></div>
      <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden">
               <div className="h-full" style={{ width: `${percentUsed}%`, backgroundColor: "rgba(255,255,255,0.9)" }}></div>
             </div>

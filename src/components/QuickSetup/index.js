@@ -147,12 +147,12 @@ openNotification('SignUp Completed!','Verification email sent. Please check your
 
 
     
-        // const docRef = collection(db, "usedMinutes", userCred.user.uid,); 
-        //       await addDoc(docRef, {
-        //         usedMinutes: 0,
-        //         minutesRemaining: null,
-        //         updatedAt: new Date(),
-        //     })
+     const docRef = collection(db, "usedMinutes", userCred.user.uid, "usedMinutes");
+              await addDoc(docRef, {
+                usedMinutes: 0,
+                minutesRemaining: null,
+                updatedAt: new Date(),
+            })
       
 
             navigate('/dashboard')
